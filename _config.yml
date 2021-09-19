@@ -19,6 +19,7 @@ navbar-links:
     - Python: "post_python"
     - MySQL: ""
     - OpenCV: "post_opencv"
+    - Algorithmstudy: "post_algorithmstudy"
   blank 1: ""
   blank 2:
     - Beautiful Jekyll: "https://beautifuljekyll.com"
