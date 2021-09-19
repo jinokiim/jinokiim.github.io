@@ -5,10 +5,10 @@
 
 # --- Required options --- #
 
-# Name of website
+# Name of website(왼쪽 상단)
 title: jinokiim
 
-# Your name to show in the footer
+# Your name to show in the footer(하단 중앙)
 author: Jinho KIM
 
 # --- List of links in the navigation bar --- #
@@ -36,7 +36,7 @@ round-avatar: true
 
 # If you want to have an image logo in the top-left corner instead of having the title of the website,
 # then specify the following parameter
-#title-img: /path/to/image
+title-img: "/assets/img/path.jpg"
 
 
 # --- Footer social media links --- #
