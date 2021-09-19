@@ -20,8 +20,10 @@ navbar-links:
     - MySQL: ""
     - OpenCV: "post_opencv"
     - Algorithmstudy: "post_algorithmstudy"
-  blank 1: ""
-  blank 2:
+  projects:
+    - Miniprojects: "miniporjects"
+    - Blank: ""
+  blank 1:
     - Beautiful Jekyll: "https://beautifuljekyll.com"
     - Learn markdown: "https://www.markdowntutorial.com/"
   about me: "aboutme"
@@ -36,7 +38,7 @@ avatar: "/assets/img/jinokiim-icon.jpeg"
 round-avatar: true
 
 # If you want to have an image logo in the top-left corner instead of having the title of the website,
-# then specify the following parameter
+# then specify the following parameter - 왼쪽 코너에 타이틀대신 이미지로 
 # title-img: "/assets/img/jinokiim-icon.jpeg"
 
 
