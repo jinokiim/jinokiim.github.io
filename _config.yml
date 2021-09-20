@@ -20,9 +20,8 @@ navbar-links:
     - MySQL: ""
     - OpenCV: "post_opencv"
     - Algorithmstudy: #"post_algorithmstudy"
-      - test: ""
   projects:
-    - Miniprojects: "miniporjects"
+    - Mini projects: "miniporjects"
     - Blank: ""
   blank 1:
     - Beautiful Jekyll: "https://beautifuljekyll.com"
