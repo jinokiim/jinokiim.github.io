@@ -19,7 +19,8 @@ navbar-links:
     - Python: "post_python"
     - MySQL: ""
     - OpenCV: "post_opencv"
-    - Algorithmstudy: "post_algorithmstudy"
+    - Algorithmstudy: #"post_algorithmstudy"
+      - test: ""
   projects:
     - Miniprojects: "miniporjects"
     - Blank: ""
