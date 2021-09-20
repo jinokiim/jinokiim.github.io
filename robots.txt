@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 Disallow: /private/
-Sitemap: http://[자신의 github 사용자명].github.io/sitemap.xml
+Sitemap: http://jinokiim.github.io/sitemap.xml
