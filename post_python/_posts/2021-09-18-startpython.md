@@ -4,8 +4,8 @@ title: Chapter 1
 subtitle: 파이썬 시작하기
 gh-repo: jinokiim/jinokiim.github.io
 gh-badge: [star, fork, follow]
-thumbnail-img: /assets/img/pythonlogo.png
-cover-img: /assets/img/pythonbglogo.png
+thumbnail-img: /assets/img/python/pythonlogo.png
+cover-img: /assets/img/python/pythonbglogo.png
 tags: [Python]
 comments: true
 ---
