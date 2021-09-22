@@ -1,0 +1,4411 @@
+# Pandas 기초
+
+
+```python
+import pandas as pd
+```
+
+### multiple index 생성
+
+
+```python
+data = pd.Series([10, 20, 30, 40, 15, 25, 35, 25],
+                index = [['a', 'a', 'a', 'a', 'b', 'b', 'b', 'b'], ['obj1', 'obj2', 'obj3', 'obj4', 'obj1', 'obj2', 'obj3', 'obj4']])
+data
+```
+
+
+
+
+    a  obj1    10
+       obj2    20
+       obj3    30
+       obj4    40
+    b  obj1    15
+       obj2    25
+       obj3    35
+       obj4    25
+    dtype: int64
+
+
+
+
+```python
+data.index
+```
+
+
+
+
+    MultiIndex([('a', 'obj1'),
+                ('a', 'obj2'),
+                ('a', 'obj3'),
+                ('a', 'obj4'),
+                ('b', 'obj1'),
+                ('b', 'obj2'),
+                ('b', 'obj3'),
+                ('b', 'obj4')],
+               )
+
+
+
+### Partial indexing
+
+
+```python
+data['b']
+```
+
+
+
+
+    obj1    15
+    obj2    25
+    obj3    35
+    obj4    25
+    dtype: int64
+
+
+
+
+```python
+data[:, 'obj2']
+```
+
+
+
+
+    a    20
+    b    25
+    dtype: int64
+
+
+
+### 데이터 unstack
+
+
+```python
+data.unstack(0)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>obj1</th>
+      <td>10</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <th>obj2</th>
+      <td>20</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <th>obj3</th>
+      <td>30</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <th>obj4</th>
+      <td>40</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+data.unstack(1)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>obj1</th>
+      <th>obj2</th>
+      <th>obj3</th>
+      <th>obj4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a</th>
+      <td>10</td>
+      <td>20</td>
+      <td>30</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td>15</td>
+      <td>25</td>
+      <td>35</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+d = data.unstack()
+d
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>obj1</th>
+      <th>obj2</th>
+      <th>obj3</th>
+      <th>obj4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a</th>
+      <td>10</td>
+      <td>20</td>
+      <td>30</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td>15</td>
+      <td>25</td>
+      <td>35</td>
+      <td>25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+d.stack()
+```
+
+
+
+
+    a  obj1    10
+       obj2    20
+       obj3    30
+       obj4    40
+    b  obj1    15
+       obj2    25
+       obj3    35
+       obj4    25
+    dtype: int64
+
+
+
+### column indexing
+
+
+```python
+import numpy as np
+
+df = pd.DataFrame(np.arange(12).reshape(4, 3),
+                 index = [['a', 'a', 'b', 'b'], ['one', 'two', 'three', 'four']],
+                 columns = [['num1', 'num2', 'num3'], ['red', 'green', 'red']]
+                 )
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>num1</th>
+      <th>num2</th>
+      <th>num3</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>red</th>
+      <th>green</th>
+      <th>red</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">a</th>
+      <th>one</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">b</th>
+      <th>three</th>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>four</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.index
+```
+
+
+
+
+    MultiIndex([('a',   'one'),
+                ('a',   'two'),
+                ('b', 'three'),
+                ('b',  'four')],
+               )
+
+
+
+
+```python
+df.columns
+```
+
+
+
+
+    MultiIndex([('num1',   'red'),
+                ('num2', 'green'),
+                ('num3',   'red')],
+               )
+
+
+
+
+```python
+df.index.names=['key1', 'key2']
+df.columns.names=['n', 'color']
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>n</th>
+      <th>num1</th>
+      <th>num2</th>
+      <th>num3</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>color</th>
+      <th>red</th>
+      <th>green</th>
+      <th>red</th>
+    </tr>
+    <tr>
+      <th>key1</th>
+      <th>key2</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">a</th>
+      <th>one</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">b</th>
+      <th>three</th>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>four</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df['num1']
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>color</th>
+      <th>red</th>
+    </tr>
+    <tr>
+      <th>key1</th>
+      <th>key2</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">a</th>
+      <th>one</th>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">b</th>
+      <th>three</th>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>four</th>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.ix['a']
+```
+
+
+    ---------------------------------------------------------------------------
+
+    AttributeError                            Traceback (most recent call last)
+
+    <ipython-input-48-470835279a79> in <module>
+    ----> 1 df.ix['a']
+    
+
+    ~/opt/anaconda3/envs/playdata/lib/python3.9/site-packages/pandas/core/generic.py in __getattr__(self, name)
+       5463             if self._info_axis._can_hold_identifiers_and_holds_name(name):
+       5464                 return self[name]
+    -> 5465             return object.__getattribute__(self, name)
+       5466 
+       5467     def __setattr__(self, name: str, value) -> None:
+
+
+    AttributeError: 'DataFrame' object has no attribute 'ix'
+
+
+### swaplevel
+
+
+```python
+df.swaplevel('key1', 'key2')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>n</th>
+      <th>num1</th>
+      <th>num2</th>
+      <th>num3</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>color</th>
+      <th>red</th>
+      <th>green</th>
+      <th>red</th>
+    </tr>
+    <tr>
+      <th>key2</th>
+      <th>key1</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <th>a</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <th>a</th>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <th>b</th>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>four</th>
+      <th>b</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.sort_index(level='key2')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th>n</th>
+      <th>num1</th>
+      <th>num2</th>
+      <th>num3</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>color</th>
+      <th>red</th>
+      <th>green</th>
+      <th>red</th>
+    </tr>
+    <tr>
+      <th>key1</th>
+      <th>key2</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>b</th>
+      <th>four</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>a</th>
+      <th>one</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <th>three</th>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>a</th>
+      <th>two</th>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### level을 사용하여 상태 요약
+
+
+```python
+df.sum(level = 'key1')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th>n</th>
+      <th>num1</th>
+      <th>num2</th>
+      <th>num3</th>
+    </tr>
+    <tr>
+      <th>color</th>
+      <th>red</th>
+      <th>green</th>
+      <th>red</th>
+    </tr>
+    <tr>
+      <th>key1</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a</th>
+      <td>3</td>
+      <td>5</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td>15</td>
+      <td>17</td>
+      <td>19</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.sum(level='color', axis=1)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>color</th>
+      <th>red</th>
+      <th>green</th>
+    </tr>
+    <tr>
+      <th>key1</th>
+      <th>key2</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="2" valign="top">a</th>
+      <th>one</th>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>8</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">b</th>
+      <th>three</th>
+      <td>14</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>four</th>
+      <td>20</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## File operations
+
+### 파일 읽기
+
+
+```python
+import pandas as pd
+```
+
+
+```python
+df = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex1.csv',
+                           index_col=None, encoding='utf-8')
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df = pd.read_table('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex1.csv',
+                           sep=',', index_col=None, encoding='utf-8')
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* header
+
+
+```python
+df = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex2.csv',
+                           index_col=None, encoding='utf-8', header=None)
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex2.csv',
+                           index_col=None, encoding='utf-8', names=['a', 'b', 'c', 'd', 'message'])
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex2.csv',
+                encoding='utf-8',  names=['a', 'b', 'c', 'd', 'message'],
+                index_col='message')
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+    </tr>
+    <tr>
+      <th>message</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>hello</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>world</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>foo</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/csv_mindex.csv',
+                           index_col=['key1', 'key2'], encoding='utf-8')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>value1</th>
+      <th>value2</th>
+    </tr>
+    <tr>
+      <th>key1</th>
+      <th>key2</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="4" valign="top">one</th>
+      <th>a</th>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td>3</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>c</th>
+      <td>5</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td>7</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th rowspan="4" valign="top">two</th>
+      <th>a</th>
+      <td>9</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td>11</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>c</th>
+      <td>13</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td>15</td>
+      <td>16</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* skiprows
+
+
+```python
+d = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex4.csv',
+                           index_col=None, encoding='utf-8')
+d
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th># hey!</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <td>message</td>
+    </tr>
+    <tr>
+      <th># just wanted to make things more difficult for you</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th># who reads CSV files with computers</th>
+      <th>anyway?</th>
+      <th>NaN</th>
+      <th>NaN</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+d = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/ex4.csv',
+                           index_col=None, encoding='utf-8', skiprows=[0, 2, 3])
+d
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## 파일에 데이터 쓰기
+
+
+```python
+d.to_csv('d_out.csv')
+d.to_csv('d_out2.csv', header=False, index=False)
+```
+
+
+```python
+d1 = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/d_out.csv',
+                           index_col=None, encoding='utf-8')
+d1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+      <th>d</th>
+      <th>message</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>hello</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+d2 = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/readEx/d_out2.csv',
+                           index_col=None, encoding='utf-8')
+d2
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>hello</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>5</td>
+      <td>6</td>
+      <td>7</td>
+      <td>8</td>
+      <td>world</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>9</td>
+      <td>10</td>
+      <td>11</td>
+      <td>12</td>
+      <td>foo</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## Merge
+
+
+```python
+df1 = pd.DataFrame({'key' : ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+                   'data1' : range(7)})
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>data1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>a</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>c</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>a</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>a</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>b</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df2 = pd.DataFrame({'key' : ['a', 'b', 'd', 'b'],
+                   'data2' : range(4)})
+df2
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>d</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.merge(df1, df2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key</th>
+      <th>data1</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>b</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>b</td>
+      <td>6</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>b</td>
+      <td>6</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>a</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>a</td>
+      <td>4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>a</td>
+      <td>5</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df1 = pd.DataFrame({'key1' : ['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+                   'data1' : range(7)})
+df2 = pd.DataFrame({'key2' : ['a', 'b', 'd', 'b'],
+                   'data2' : range(4)})
+pd.merge(df1, df2, left_on='key1', right_on='key2')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key1</th>
+      <th>data1</th>
+      <th>key2</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>0</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>b</td>
+      <td>1</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>1</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>b</td>
+      <td>6</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>b</td>
+      <td>6</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>a</td>
+      <td>2</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>a</td>
+      <td>4</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>a</td>
+      <td>5</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### inner / outer join
+
+
+```python
+pd.merge(df1, df2, left_on='key1', right_on='key2', how='left')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key1</th>
+      <th>data1</th>
+      <th>key2</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0</td>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>0</td>
+      <td>b</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>b</td>
+      <td>1</td>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>1</td>
+      <td>b</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>a</td>
+      <td>2</td>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>c</td>
+      <td>3</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>a</td>
+      <td>4</td>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>a</td>
+      <td>5</td>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>b</td>
+      <td>6</td>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>b</td>
+      <td>6</td>
+      <td>b</td>
+      <td>3.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.merge(df1, df2, left_on='key1', right_on='key2', how='right')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key1</th>
+      <th>data1</th>
+      <th>key2</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>a</td>
+      <td>2.0</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>a</td>
+      <td>4.0</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>a</td>
+      <td>5.0</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>0.0</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>b</td>
+      <td>1.0</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>b</td>
+      <td>6.0</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>d</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>b</td>
+      <td>0.0</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>b</td>
+      <td>1.0</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>b</td>
+      <td>6.0</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.merge(df1, df2, left_on='key1', right_on='key2', how='outer')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>key1</th>
+      <th>data1</th>
+      <th>key2</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0.0</td>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>0.0</td>
+      <td>b</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>b</td>
+      <td>1.0</td>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>1.0</td>
+      <td>b</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>b</td>
+      <td>6.0</td>
+      <td>b</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>b</td>
+      <td>6.0</td>
+      <td>b</td>
+      <td>3.0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>a</td>
+      <td>2.0</td>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>a</td>
+      <td>4.0</td>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>a</td>
+      <td>5.0</td>
+      <td>a</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>c</td>
+      <td>3.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>d</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Concatenating data
+
+
+```python
+s1 = pd.Series([0, 1], index=['a', 'b'])
+s2 = pd.Series([2, 1, 3], index=['c', 'd', 'e'])
+s3 = pd.Series([4, 7], index=['a', 'e'])
+```
+
+
+```python
+s1
+```
+
+
+
+
+    a    0
+    b    1
+    dtype: int64
+
+
+
+
+```python
+s2
+```
+
+
+
+
+    c    2
+    d    1
+    e    3
+    dtype: int64
+
+
+
+
+```python
+s3
+```
+
+
+
+
+    a    4
+    e    7
+    dtype: int64
+
+
+
+
+```python
+pd.concat([s1, s2])
+```
+
+
+
+
+    a    0
+    b    1
+    c    2
+    d    1
+    e    3
+    dtype: int64
+
+
+
+
+```python
+pd.concat([s1, s2], axis=1)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>a</th>
+      <td>0.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td>1.0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>c</th>
+      <td>NaN</td>
+      <td>2.0</td>
+    </tr>
+    <tr>
+      <th>d</th>
+      <td>NaN</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>e</th>
+      <td>NaN</td>
+      <td>3.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.concat([s1, s2, s3], keys=['one', 'two', 'three'])
+```
+
+
+
+
+    one    a    0
+           b    1
+    two    c    2
+           d    1
+           e    3
+    three  a    4
+           e    7
+    dtype: int64
+
+
+
+
+```python
+pd.concat([df1, df2], join='inner', axis=1, keys=['one', 'two'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">one</th>
+      <th colspan="2" halign="left">two</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>key1</th>
+      <th>data1</th>
+      <th>key2</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>1</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>a</td>
+      <td>2</td>
+      <td>d</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>c</td>
+      <td>3</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+pd.concat({'level1':df1, 'level2':df2}, axis=1, join='inner')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" halign="left">level1</th>
+      <th colspan="2" halign="left">level2</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>key1</th>
+      <th>data1</th>
+      <th>key2</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b</td>
+      <td>0</td>
+      <td>a</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>b</td>
+      <td>1</td>
+      <td>b</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>a</td>
+      <td>2</td>
+      <td>d</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>c</td>
+      <td>3</td>
+      <td>b</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## 데이터 변환
+
+## 중복항목 제거
+
+
+```python
+df = pd.DataFrame({'k1':['one']*3+['two']*4,
+                  'k2':[1,1,2,3,3,4,4]})
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>one</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>one</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>one</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.duplicated()
+```
+
+
+
+
+    0    False
+    1     True
+    2    False
+    3    False
+    4     True
+    5    False
+    6     True
+    dtype: bool
+
+
+
+
+```python
+df.drop_duplicates()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>one</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>one</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.drop_duplicates(keep='last')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>one</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>one</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.drop_duplicates(['k1'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>one</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.drop_duplicates(['k1', 'k2'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>one</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>one</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### value 대체
+
+
+```python
+df.replace('one', 'One')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>One</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>One</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>One</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>two</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.replace(['one', 3], ['One', 30])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>One</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>One</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>One</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>two</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>two</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>two</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## groupby 와 데이터 집합
+
+### 기초
+
+
+```python
+df = pd.DataFrame({'k1':['a', 'a', 'b', 'b', 'a'],
+                  'k2':['one', 'two', 'one', 'two', 'one'],
+                  'data1':[2, 3, 3, 2, 4],
+                  'data2':[5, 5, 5, 5, 10]})
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>k1</th>
+      <th>k2</th>
+      <th>data1</th>
+      <th>data2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>a</td>
+      <td>one</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>a</td>
+      <td>two</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>b</td>
+      <td>one</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>b</td>
+      <td>two</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>a</td>
+      <td>one</td>
+      <td>4</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+gp1 = df['data1'].groupby(df['k1'])
+gp1
+```
+
+
+
+
+    <pandas.core.groupby.generic.SeriesGroupBy object at 0x7ff3d800a910>
+
+
+
+
+```python
+gp1.mean()
+```
+
+
+
+
+    k1
+    a    3.0
+    b    2.5
+    Name: data1, dtype: float64
+
+
+
+
+```python
+gp2 = df['data1'].groupby([df['k1'], df['k2']])
+mean = gp2.mean()
+mean
+```
+
+
+
+
+    k1  k2 
+    a   one    3
+        two    3
+    b   one    3
+        two    2
+    Name: data1, dtype: int64
+
+
+
+## 그룹 반복
+
+
+```python
+for name, group in gp1:
+    print(name)
+    print(group)
+```
+
+    a
+    0    2
+    1    3
+    4    4
+    Name: data1, dtype: int64
+    b
+    2    3
+    3    2
+    Name: data1, dtype: int64
+
+
+
+```python
+for name, group in gp2:
+    print(name)
+    print(group)
+```
+
+    ('a', 'one')
+    0    2
+    4    4
+    Name: data1, dtype: int64
+    ('a', 'two')
+    1    3
+    Name: data1, dtype: int64
+    ('b', 'one')
+    2    3
+    Name: data1, dtype: int64
+    ('b', 'two')
+    3    2
+    Name: data1, dtype: int64
+
+
+
+```python
+for (k1, k2), group in gp2:
+    print(k1, k2)
+    print(group)
+```
+
+    a one
+    0    2
+    4    4
+    Name: data1, dtype: int64
+    a two
+    1    3
+    Name: data1, dtype: int64
+    b one
+    2    3
+    Name: data1, dtype: int64
+    b two
+    3    2
+    Name: data1, dtype: int64
+
+
+## Data 집합
+
+
+```python
+gp1.max()
+```
+
+
+
+
+    k1
+    a    4
+    b    3
+    Name: data1, dtype: int64
+
+
+
+
+```python
+gp2.min()
+```
+
+
+
+
+    k1  k2 
+    a   one    2
+        two    3
+    b   one    3
+        two    2
+    Name: data1, dtype: int64
+
+
+
+## dates 와 times
+
+## time 생성
+
+
+```python
+import pandas as pd
+import numpy as np
+
+rng = pd.date_range('2011-03-01 10:15', periods = 10, freq = 'M')
+rng
+```
+
+
+
+
+    DatetimeIndex(['2011-03-31 10:15:00', '2011-04-30 10:15:00',
+                   '2011-05-31 10:15:00', '2011-06-30 10:15:00',
+                   '2011-07-31 10:15:00', '2011-08-31 10:15:00',
+                   '2011-09-30 10:15:00', '2011-10-31 10:15:00',
+                   '2011-11-30 10:15:00', '2011-12-31 10:15:00'],
+                  dtype='datetime64[ns]', freq='M')
+
+
+
+
+```python
+rng = pd.date_range('2015 Jul 2 10:15', periods = 10, freq = 'M')
+rng
+```
+
+
+
+
+    DatetimeIndex(['2015-07-31 10:15:00', '2015-08-31 10:15:00',
+                   '2015-09-30 10:15:00', '2015-10-31 10:15:00',
+                   '2015-11-30 10:15:00', '2015-12-31 10:15:00',
+                   '2016-01-31 10:15:00', '2016-02-29 10:15:00',
+                   '2016-03-31 10:15:00', '2016-04-30 10:15:00'],
+                  dtype='datetime64[ns]', freq='M')
+
+
+
+* start 와 end 를 통해 생성
+
+
+```python
+rng = pd.date_range(start='2015 Jul 2 10:15', end='2015 July 12', freq='12H')
+rng
+```
+
+
+
+
+    DatetimeIndex(['2015-07-02 10:15:00', '2015-07-02 22:15:00',
+                   '2015-07-03 10:15:00', '2015-07-03 22:15:00',
+                   '2015-07-04 10:15:00', '2015-07-04 22:15:00',
+                   '2015-07-05 10:15:00', '2015-07-05 22:15:00',
+                   '2015-07-06 10:15:00', '2015-07-06 22:15:00',
+                   '2015-07-07 10:15:00', '2015-07-07 22:15:00',
+                   '2015-07-08 10:15:00', '2015-07-08 22:15:00',
+                   '2015-07-09 10:15:00', '2015-07-09 22:15:00',
+                   '2015-07-10 10:15:00', '2015-07-10 22:15:00',
+                   '2015-07-11 10:15:00', '2015-07-11 22:15:00'],
+                  dtype='datetime64[ns]', freq='12H')
+
+
+
+
+```python
+len(rng)
+```
+
+
+
+
+    20
+
+
+
+
+```python
+rng = pd.date_range(start='2015 Jul 2 10:15', end='2015 July 12', freq='12H', tz='Asia/Kolkata')
+rng
+```
+
+
+
+
+    DatetimeIndex(['2015-07-02 10:15:00+05:30', '2015-07-02 22:15:00+05:30',
+                   '2015-07-03 10:15:00+05:30', '2015-07-03 22:15:00+05:30',
+                   '2015-07-04 10:15:00+05:30', '2015-07-04 22:15:00+05:30',
+                   '2015-07-05 10:15:00+05:30', '2015-07-05 22:15:00+05:30',
+                   '2015-07-06 10:15:00+05:30', '2015-07-06 22:15:00+05:30',
+                   '2015-07-07 10:15:00+05:30', '2015-07-07 22:15:00+05:30',
+                   '2015-07-08 10:15:00+05:30', '2015-07-08 22:15:00+05:30',
+                   '2015-07-09 10:15:00+05:30', '2015-07-09 22:15:00+05:30',
+                   '2015-07-10 10:15:00+05:30', '2015-07-10 22:15:00+05:30',
+                   '2015-07-11 10:15:00+05:30', '2015-07-11 22:15:00+05:30'],
+                  dtype='datetime64[ns, Asia/Kolkata]', freq='12H')
+
+
+
+
+```python
+rng.tz_convert('Australia/sydney')
+```
+
+
+
+
+    DatetimeIndex(['2015-07-02 14:45:00+10:00', '2015-07-03 02:45:00+10:00',
+                   '2015-07-03 14:45:00+10:00', '2015-07-04 02:45:00+10:00',
+                   '2015-07-04 14:45:00+10:00', '2015-07-05 02:45:00+10:00',
+                   '2015-07-05 14:45:00+10:00', '2015-07-06 02:45:00+10:00',
+                   '2015-07-06 14:45:00+10:00', '2015-07-07 02:45:00+10:00',
+                   '2015-07-07 14:45:00+10:00', '2015-07-08 02:45:00+10:00',
+                   '2015-07-08 14:45:00+10:00', '2015-07-09 02:45:00+10:00',
+                   '2015-07-09 14:45:00+10:00', '2015-07-10 02:45:00+10:00',
+                   '2015-07-10 14:45:00+10:00', '2015-07-11 02:45:00+10:00',
+                   '2015-07-11 14:45:00+10:00', '2015-07-12 02:45:00+10:00'],
+                  dtype='datetime64[ns, Australia/Sydney]', freq='12H')
+
+
+
+
+```python
+type(rng[0])
+```
+
+
+
+
+    pandas._libs.tslibs.timestamps.Timestamp
+
+
+
+### 문자열을 date 로 변환
+
+
+```python
+dd=['07/07/2015', '08/12/2015', '12/04/2015']
+dd
+```
+
+
+
+
+    ['07/07/2015', '08/12/2015', '12/04/2015']
+
+
+
+
+```python
+type(dd[0])
+```
+
+
+
+
+    str
+
+
+
+
+```python
+list(pd.to_datetime(dd))
+```
+
+
+
+
+    [Timestamp('2015-07-07 00:00:00'),
+     Timestamp('2015-08-12 00:00:00'),
+     Timestamp('2015-12-04 00:00:00')]
+
+
+
+
+```python
+d = list(pd.to_datetime(dd, dayfirst=True))
+d
+```
+
+
+
+
+    [Timestamp('2015-07-07 00:00:00'),
+     Timestamp('2015-12-08 00:00:00'),
+     Timestamp('2015-04-12 00:00:00')]
+
+
+
+
+```python
+type(d[0])
+```
+
+
+
+
+    pandas._libs.tslibs.timestamps.Timestamp
+
+
+
+### periods
+
+
+```python
+pr = pd.Period('2012', freq='M')
+pr.asfreq('D', 'start')
+```
+
+
+
+
+    Period('2012-01-01', 'D')
+
+
+
+
+```python
+pr.asfreq('D', 'end')
+```
+
+
+
+
+    Period('2012-01-31', 'D')
+
+
+
+* period 연산
+
+
+```python
+pr = pd.Period('2012', freq='A')
+pr
+```
+
+
+
+
+    Period('2012', 'A-DEC')
+
+
+
+
+```python
+pr+1
+```
+
+
+
+
+    Period('2013', 'A-DEC')
+
+
+
+
+```python
+prMonth = pr.asfreq('M')
+prMonth
+```
+
+
+
+
+    Period('2012-12', 'M')
+
+
+
+
+```python
+prMonth -1
+```
+
+
+
+
+    Period('2012-11', 'M')
+
+
+
+### range 를 통한 period 생성
+
+
+```python
+prg = pd.period_range('2010', '2015', freq='A')
+prg
+```
+
+
+
+
+    PeriodIndex(['2010', '2011', '2012', '2013', '2014', '2015'], dtype='period[A-DEC]', freq='A-DEC')
+
+
+
+
+```python
+data = pd.Series(np.random.rand(len(prg)), index=prg)
+data
+```
+
+
+
+
+    2010    0.773062
+    2011    0.246164
+    2012    0.298947
+    2013    0.096472
+    2014    0.279433
+    2015    0.894872
+    Freq: A-DEC, dtype: float64
+
+
+
+### 문자열로 된 날짜를 period로 변환
+
+
+```python
+dates = ['2013-02-02', '2012-02-02', '2013-02-02']
+```
+
+
+```python
+d = pd.to_datetime(dates)
+d
+```
+
+
+
+
+    DatetimeIndex(['2013-02-02', '2012-02-02', '2013-02-02'], dtype='datetime64[ns]', freq=None)
+
+
+
+
+```python
+prd = d.to_period(freq='M')
+prd
+```
+
+
+
+
+    PeriodIndex(['2013-02', '2012-02', '2013-02'], dtype='period[M]', freq='M')
+
+
+
+
+```python
+prd.asfreq('D')
+```
+
+
+
+
+    PeriodIndex(['2013-02-28', '2012-02-29', '2013-02-28'], dtype='period[D]', freq='D')
+
+
+
+
+```python
+prd.asfreq('Y')
+```
+
+
+
+
+    PeriodIndex(['2013', '2012', '2013'], dtype='period[A-DEC]', freq='A-DEC')
+
+
+
+### periods 를 timestamps로 변환
+
+
+```python
+prd
+```
+
+
+
+
+    PeriodIndex(['2013-02', '2012-02', '2013-02'], dtype='period[M]', freq='M')
+
+
+
+
+```python
+prd.to_timestamp()
+```
+
+
+
+
+    DatetimeIndex(['2013-02-01', '2012-02-01', '2013-02-01'], dtype='datetime64[ns]', freq=None)
+
+
+
+
+```python
+prd.to_timestamp(how='end')
+```
+
+
+
+
+    DatetimeIndex(['2013-02-28 23:59:59.999999999',
+                   '2012-02-29 23:59:59.999999999',
+                   '2013-02-28 23:59:59.999999999'],
+                  dtype='datetime64[ns]', freq=None)
+
+
+
+### Time offsets
+
+
+```python
+pd.Timedelta('3 days')
+```
+
+
+
+
+    Timedelta('3 days 00:00:00')
+
+
+
+
+```python
+pd.Timedelta('3M')
+```
+
+    /Users/jinho/opt/anaconda3/envs/playdata/lib/python3.9/site-packages/IPython/core/interactiveshell.py:3441: FutureWarning: Units 'M', 'Y' and 'y' do not represent unambiguous timedelta values and will be removed in a future version
+      exec(code_obj, self.user_global_ns, self.user_ns)
+
+
+
+
+
+    Timedelta('0 days 00:03:00')
+
+
+
+
+```python
+pd.Timedelta('4 days 3M')
+```
+
+
+
+
+    Timedelta('4 days 00:03:00')
+
+
+
+
+```python
+pd.Timestamp('9 July 2016 12:00') + pd.Timedelta('1 day 3 min')
+```
+
+
+
+
+    Timestamp('2016-07-10 12:03:00')
+
+
+
+
+```python
+rng + pd.Timedelta('1 day')
+```
+
+
+
+
+    DatetimeIndex(['2015-07-03 10:15:00+05:30', '2015-07-03 22:15:00+05:30',
+                   '2015-07-04 10:15:00+05:30', '2015-07-04 22:15:00+05:30',
+                   '2015-07-05 10:15:00+05:30', '2015-07-05 22:15:00+05:30',
+                   '2015-07-06 10:15:00+05:30', '2015-07-06 22:15:00+05:30',
+                   '2015-07-07 10:15:00+05:30', '2015-07-07 22:15:00+05:30',
+                   '2015-07-08 10:15:00+05:30', '2015-07-08 22:15:00+05:30',
+                   '2015-07-09 10:15:00+05:30', '2015-07-09 22:15:00+05:30',
+                   '2015-07-10 10:15:00+05:30', '2015-07-10 22:15:00+05:30',
+                   '2015-07-11 10:15:00+05:30', '2015-07-11 22:15:00+05:30',
+                   '2015-07-12 10:15:00+05:30', '2015-07-12 22:15:00+05:30'],
+                  dtype='datetime64[ns, Asia/Kolkata]', freq='12H')
+
+
+
+### time 과 index data
+
+
+```python
+dates = pd.date_range('2015-01-12', '2015-06-14', freq = 'M')
+dates
+```
+
+
+
+
+    DatetimeIndex(['2015-01-31', '2015-02-28', '2015-03-31', '2015-04-30',
+                   '2015-05-31'],
+                  dtype='datetime64[ns]', freq='M')
+
+
+
+
+```python
+len(dates)
+```
+
+
+
+
+    5
+
+
+
+
+```python
+atemp = pd.Series([100.2, 98, 93, 98, 100], index=dates)
+atemp
+```
+
+
+
+
+    2015-01-31    100.2
+    2015-02-28     98.0
+    2015-03-31     93.0
+    2015-04-30     98.0
+    2015-05-31    100.0
+    Freq: M, dtype: float64
+
+
+
+
+```python
+idx = atemp.index[3]
+idx
+```
+
+
+
+
+    Timestamp('2015-04-30 00:00:00', freq='M')
+
+
+
+
+```python
+atemp[idx]
+```
+
+
+
+
+    98.0
+
+
+
+
+```python
+stemp = pd.Series([89, 98, 100, 88, 89], index=dates)
+stemp
+```
+
+
+
+
+    2015-01-31     89
+    2015-02-28     98
+    2015-03-31    100
+    2015-04-30     88
+    2015-05-31     89
+    Freq: M, dtype: int64
+
+
+
+
+```python
+temps = pd.DataFrame({'Auckland':atemp, 'Delhi':stemp})
+temps
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Auckland</th>
+      <th>Delhi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2015-01-31</th>
+      <td>100.2</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <th>2015-02-28</th>
+      <td>98.0</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <th>2015-03-31</th>
+      <td>93.0</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>2015-04-30</th>
+      <td>98.0</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <th>2015-05-31</th>
+      <td>100.0</td>
+      <td>89</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+temps['Auckland']
+```
+
+
+
+
+    2015-01-31    100.2
+    2015-02-28     98.0
+    2015-03-31     93.0
+    2015-04-30     98.0
+    2015-05-31    100.0
+    Freq: M, Name: Auckland, dtype: float64
+
+
+
+
+```python
+temps['Diff'] = temps['Auckland'] - temps['Delhi']
+temps
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Auckland</th>
+      <th>Delhi</th>
+      <th>Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2015-01-31</th>
+      <td>100.2</td>
+      <td>89</td>
+      <td>11.2</td>
+    </tr>
+    <tr>
+      <th>2015-02-28</th>
+      <td>98.0</td>
+      <td>98</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2015-03-31</th>
+      <td>93.0</td>
+      <td>100</td>
+      <td>-7.0</td>
+    </tr>
+    <tr>
+      <th>2015-04-30</th>
+      <td>98.0</td>
+      <td>88</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>2015-05-31</th>
+      <td>100.0</td>
+      <td>89</td>
+      <td>11.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+del temps['Diff']
+temps
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Auckland</th>
+      <th>Delhi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2015-01-31</th>
+      <td>100.2</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <th>2015-02-28</th>
+      <td>98.0</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <th>2015-03-31</th>
+      <td>93.0</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>2015-04-30</th>
+      <td>98.0</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <th>2015-05-31</th>
+      <td>100.0</td>
+      <td>89</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## 응용
+
+
+```python
+import pandas as pd
+df = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/time/stocks.csv')
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>date</th>
+      <th>AA</th>
+      <th>GE</th>
+      <th>IBM</th>
+      <th>MSFT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1990-02-01 00:00:00</td>
+      <td>4.98</td>
+      <td>2.87</td>
+      <td>16.79</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1990-02-02 00:00:00</td>
+      <td>5.04</td>
+      <td>2.87</td>
+      <td>16.89</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>1990-02-05 00:00:00</td>
+      <td>5.07</td>
+      <td>2.87</td>
+      <td>17.32</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>1990-02-06 00:00:00</td>
+      <td>5.01</td>
+      <td>2.88</td>
+      <td>17.56</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>1990-02-07 00:00:00</td>
+      <td>5.04</td>
+      <td>2.91</td>
+      <td>17.93</td>
+      <td>0.51</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+d = df.date[0]
+d
+```
+
+
+
+
+    '1990-02-01 00:00:00'
+
+
+
+
+```python
+type(d)
+```
+
+
+
+
+    str
+
+
+
+
+```python
+df = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/time/stocks.csv',
+                          parse_dates=['date'], index_col='date')
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>AA</th>
+      <th>GE</th>
+      <th>IBM</th>
+      <th>MSFT</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1990-02-01</th>
+      <td>0</td>
+      <td>4.98</td>
+      <td>2.87</td>
+      <td>16.79</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-02</th>
+      <td>1</td>
+      <td>5.04</td>
+      <td>2.87</td>
+      <td>16.89</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-05</th>
+      <td>2</td>
+      <td>5.07</td>
+      <td>2.87</td>
+      <td>17.32</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-06</th>
+      <td>3</td>
+      <td>5.01</td>
+      <td>2.88</td>
+      <td>17.56</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-07</th>
+      <td>4</td>
+      <td>5.04</td>
+      <td>2.91</td>
+      <td>17.93</td>
+      <td>0.51</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+del df['Unnamed: 0']
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AA</th>
+      <th>GE</th>
+      <th>IBM</th>
+      <th>MSFT</th>
+    </tr>
+    <tr>
+      <th>date</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1990-02-01</th>
+      <td>4.98</td>
+      <td>2.87</td>
+      <td>16.79</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-02</th>
+      <td>5.04</td>
+      <td>2.87</td>
+      <td>16.89</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-05</th>
+      <td>5.07</td>
+      <td>2.87</td>
+      <td>17.32</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-06</th>
+      <td>5.01</td>
+      <td>2.88</td>
+      <td>17.56</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1990-02-07</th>
+      <td>5.04</td>
+      <td>2.91</td>
+      <td>17.93</td>
+      <td>0.51</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.index.name
+```
+
+
+
+
+    'date'
+
+
+
+## resampling
+
+
+```python
+stocks = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/time/stocks.csv',
+                          parse_dates=['date'])
+stocks.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>date</th>
+      <th>AA</th>
+      <th>GE</th>
+      <th>IBM</th>
+      <th>MSFT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1990-02-01</td>
+      <td>4.98</td>
+      <td>2.87</td>
+      <td>16.79</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1990-02-02</td>
+      <td>5.04</td>
+      <td>2.87</td>
+      <td>16.89</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>1990-02-05</td>
+      <td>5.07</td>
+      <td>2.87</td>
+      <td>17.32</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>1990-02-06</td>
+      <td>5.01</td>
+      <td>2.88</td>
+      <td>17.56</td>
+      <td>0.51</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>1990-02-07</td>
+      <td>5.04</td>
+      <td>2.91</td>
+      <td>17.93</td>
+      <td>0.51</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
