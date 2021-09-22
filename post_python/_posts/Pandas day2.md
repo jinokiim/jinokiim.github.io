@@ -1,0 +1,2629 @@
+# Pandas 기초
+
+
+```python
+import pandas as pd
+```
+
+
+```python
+casts = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/cast.csv',
+                    index_col=None, encoding='utf-8')
+casts.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suuri illusioni</td>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## Unstack
+
+* 10년 주기로 영화를 그룹화
+
+
+```python
+c = casts
+c.groupby([c['year']//10*10, 'type']).size().head(8)
+```
+
+
+
+
+    year  type   
+    1910  actor       384
+          actress     285
+    1920  actor       710
+          actress     411
+    1930  actor      2628
+          actress     820
+    1940  actor      3014
+          actress     983
+    dtype: int64
+
+
+
+* 유형에 따라 데이터를 그룹화
+
+
+```python
+c = casts
+c_decade = c.groupby(['type', c['year']//10*10]).size()
+c_decade
+```
+
+
+
+
+    type     year
+    actor    1910      384
+             1920      710
+             1930     2628
+             1940     3014
+             1950     2877
+             1960     2775
+             1970     3044
+             1980     3565
+             1990     5108
+             2000    10368
+             2010    15523
+             2020        4
+    actress  1910      285
+             1920      411
+             1930      820
+             1940      983
+             1950     1015
+             1960      968
+             1970     1299
+             1980     1989
+             1990     2544
+             2000     5831
+             2010     8853
+             2020        3
+    dtype: int64
+
+
+
+* unstack 으로 새로운 dataframe 생성
+
+
+```python
+c_decade.unstack()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>year</th>
+      <th>1910</th>
+      <th>1920</th>
+      <th>1930</th>
+      <th>1940</th>
+      <th>1950</th>
+      <th>1960</th>
+      <th>1970</th>
+      <th>1980</th>
+      <th>1990</th>
+      <th>2000</th>
+      <th>2010</th>
+      <th>2020</th>
+    </tr>
+    <tr>
+      <th>type</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>actor</th>
+      <td>384</td>
+      <td>710</td>
+      <td>2628</td>
+      <td>3014</td>
+      <td>2877</td>
+      <td>2775</td>
+      <td>3044</td>
+      <td>3565</td>
+      <td>5108</td>
+      <td>10368</td>
+      <td>15523</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>actress</th>
+      <td>285</td>
+      <td>411</td>
+      <td>820</td>
+      <td>983</td>
+      <td>1015</td>
+      <td>968</td>
+      <td>1299</td>
+      <td>1989</td>
+      <td>2544</td>
+      <td>5831</td>
+      <td>8853</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+import matplotlib.pyplot as plt
+```
+
+
+```python
+c_decade.unstack().plot()
+```
+
+    /Users/jinho/opt/anaconda3/lib/python3.8/site-packages/pandas/plotting/_matplotlib/core.py:1192: UserWarning: FixedFormatter should only be used together with FixedLocator
+      ax.set_xticklabels(xticklabels)
+
+
+
+
+
+    <AxesSubplot:xlabel='type'>
+
+
+
+
+```python
+plt.show()
+```
+
+
+    
+![png](output_11_0.png)
+    
+
+
+
+```python
+c_decade.unstack().plot(kind='bar')
+plt.show()
+```
+
+
+    
+![png](output_12_0.png)
+    
+
+
+* 데이터를 나란히 표시하기 위해 unstack(0) 사용
+
+
+```python
+c_decade.unstack(0)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>type</th>
+      <th>actor</th>
+      <th>actress</th>
+    </tr>
+    <tr>
+      <th>year</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1910</th>
+      <td>384</td>
+      <td>285</td>
+    </tr>
+    <tr>
+      <th>1920</th>
+      <td>710</td>
+      <td>411</td>
+    </tr>
+    <tr>
+      <th>1930</th>
+      <td>2628</td>
+      <td>820</td>
+    </tr>
+    <tr>
+      <th>1940</th>
+      <td>3014</td>
+      <td>983</td>
+    </tr>
+    <tr>
+      <th>1950</th>
+      <td>2877</td>
+      <td>1015</td>
+    </tr>
+    <tr>
+      <th>1960</th>
+      <td>2775</td>
+      <td>968</td>
+    </tr>
+    <tr>
+      <th>1970</th>
+      <td>3044</td>
+      <td>1299</td>
+    </tr>
+    <tr>
+      <th>1980</th>
+      <td>3565</td>
+      <td>1989</td>
+    </tr>
+    <tr>
+      <th>1990</th>
+      <td>5108</td>
+      <td>2544</td>
+    </tr>
+    <tr>
+      <th>2000</th>
+      <td>10368</td>
+      <td>5831</td>
+    </tr>
+    <tr>
+      <th>2010</th>
+      <td>15523</td>
+      <td>8853</td>
+    </tr>
+    <tr>
+      <th>2020</th>
+      <td>4</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+c_decade.unstack(0).plot(kind='bar')
+plt.show()
+```
+
+
+    
+![png](output_15_0.png)
+    
+
+
+## merge
+
+동일한 유형의 다른 데이터 파일을 병합하는 것
+
+
+```python
+release = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/release_dates.csv',
+                    index_col=None, encoding='utf-8')
+release.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>country</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>#73, Shaanthi Nivaasa</td>
+      <td>2007</td>
+      <td>India</td>
+      <td>2007-06-15</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>#Beings</td>
+      <td>2015</td>
+      <td>Romania</td>
+      <td>2015-01-29</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>#Declimax</td>
+      <td>2018</td>
+      <td>Netherlands</td>
+      <td>2018-01-21</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>#Ewankosau saranghaeyo</td>
+      <td>2015</td>
+      <td>Philippines</td>
+      <td>2015-01-21</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>#Horror</td>
+      <td>2015</td>
+      <td>USA</td>
+      <td>2015-11-20</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* casts 파일에서 Amelia 를 필터링
+
+
+```python
+c_amelia = casts[casts['title']=='Amelia']
+c_amelia.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5767</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>23319</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Jeremy Akerman</td>
+      <td>actor</td>
+      <td>Sheriff</td>
+      <td>19.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* release 파일에서 개봉일을 알아본다.
+
+
+```python
+release[release['title']=='Amelia'].head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>country</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20543</th>
+      <td>Amelia</td>
+      <td>1966</td>
+      <td>Mexico</td>
+      <td>1966-03-10</td>
+    </tr>
+    <tr>
+      <th>20544</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Canada</td>
+      <td>2009-10-23</td>
+    </tr>
+    <tr>
+      <th>20545</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>USA</td>
+      <td>2009-10-23</td>
+    </tr>
+    <tr>
+      <th>20546</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Australia</td>
+      <td>2009-11-12</td>
+    </tr>
+    <tr>
+      <th>20547</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Singapore</td>
+      <td>2009-11-12</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* 두개의 데이터 병합
+
+
+```python
+c_amelia.merge(release).head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+      <th>country</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>Canada</td>
+      <td>2009-10-23</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>USA</td>
+      <td>2009-10-23</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>Australia</td>
+      <td>2009-11-12</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>Singapore</td>
+      <td>2009-11-12</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>Ireland</td>
+      <td>2009-11-13</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* name 이 Aaron Abrams인 항목 필터링
+
+
+```python
+c = casts[casts['name']=='Aaron Abrams']
+c.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5765</th>
+      <td>#FromJennifer</td>
+      <td>2017</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Ralph Sinclair</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5766</th>
+      <td>388 Arletta Avenue</td>
+      <td>2011</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Alex</td>
+      <td>4.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* 제목과 년도를 기준으로 병합
+* 병합하려면 영화 이름과 연도가 같아야한다
+
+
+```python
+c.merge(casts, on=['title', 'year']).head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name_x</th>
+      <th>type_x</th>
+      <th>character_x</th>
+      <th>n_x</th>
+      <th>name_y</th>
+      <th>type_y</th>
+      <th>character_y</th>
+      <th>n_y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>#FromJennifer</td>
+      <td>2017</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Ralph Sinclair</td>
+      <td>NaN</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Ralph Sinclair</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>#FromJennifer</td>
+      <td>2017</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Ralph Sinclair</td>
+      <td>NaN</td>
+      <td>Christian Ackerman</td>
+      <td>actor</td>
+      <td>Simon</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>388 Arletta Avenue</td>
+      <td>2011</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Alex</td>
+      <td>4.0</td>
+      <td>Graham Abbey</td>
+      <td>actor</td>
+      <td>Officer #2</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>388 Arletta Avenue</td>
+      <td>2011</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Alex</td>
+      <td>4.0</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Alex</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+c_costar = c.merge(casts, on=['title', 'year'])
+c_costar = c_costar[c_costar['name_y']!='Aaron Abrams']
+c_costar.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name_x</th>
+      <th>type_x</th>
+      <th>character_x</th>
+      <th>n_x</th>
+      <th>name_y</th>
+      <th>type_y</th>
+      <th>character_y</th>
+      <th>n_y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>#FromJennifer</td>
+      <td>2017</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Ralph Sinclair</td>
+      <td>NaN</td>
+      <td>Christian Ackerman</td>
+      <td>actor</td>
+      <td>Simon</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>388 Arletta Avenue</td>
+      <td>2011</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Alex</td>
+      <td>4.0</td>
+      <td>Graham Abbey</td>
+      <td>actor</td>
+      <td>Officer #2</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Amelia</td>
+      <td>2009</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>Slim Gordon</td>
+      <td>8.0</td>
+      <td>Jeremy Akerman</td>
+      <td>actor</td>
+      <td>Sheriff</td>
+      <td>19.0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Cinderella Man</td>
+      <td>2005</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>1928 Fan</td>
+      <td>67.0</td>
+      <td>Nick Alachiotis</td>
+      <td>actor</td>
+      <td>Baer Cornerman</td>
+      <td>38.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Cinderella Man</td>
+      <td>2005</td>
+      <td>Aaron Abrams</td>
+      <td>actor</td>
+      <td>1928 Fan</td>
+      <td>67.0</td>
+      <td>Nick Alachiotis</td>
+      <td>actor</td>
+      <td>Undercard Boxer - Feldman</td>
+      <td>38.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## Index
+
+데이터를 구성하고 데이터에 대한 빠른 액세스를 가능하게한다.
+%%timeit을 사용하여 작업에 필요한 시간을 비교할 수 있다.
+
+
+```python
+import pandas as pd
+cast = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/cast.csv',
+                    index_col=None, encoding='utf-8')
+cast.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suuri illusioni</td>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* index 생성
+
+
+```python
+%%time
+# indexing없이 데이터 접근
+
+cast[cast['title']=='Macbeth']
+```
+
+    CPU times: user 14.3 ms, sys: 1.64 ms, total: 16 ms
+    Wall time: 16.9 ms
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>12868</th>
+      <td>Macbeth</td>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22302</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>25855</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>26990</th>
+      <td>Macbeth</td>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>38090</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+    <tr>
+      <th>40639</th>
+      <td>Macbeth</td>
+      <td>1997</td>
+      <td>Stevie Allen</td>
+      <td>actor</td>
+      <td>Murderer</td>
+      <td>21.0</td>
+    </tr>
+    <tr>
+      <th>60543</th>
+      <td>Macbeth</td>
+      <td>2014</td>
+      <td>Moyo Akand?</td>
+      <td>actress</td>
+      <td>Witch</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>63776</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+%%timeit
+
+# indexing 없이 데이터 접근
+cast[cast['title']=='Macbeth']
+```
+
+    3.72 ms ± 23.8 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+
+* set index 를 통해 데이터에 대한 인덱스를 생성한다.
+
+
+```python
+c = cast.set_index(['title'])
+c.head(4)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Closet Monster</th>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>Suuri illusioni</th>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>Battle of the Sexes</th>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>Secret in Their Eyes</th>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* 더 빠른 작업을 위해 .loc 를 사용
+
+
+```python
+%%time
+
+c.loc['Macbeth']
+```
+
+    CPU times: user 16.3 ms, sys: 2.59 ms, total: 18.9 ms
+    Wall time: 21.5 ms
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Macbeth</th>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1997</td>
+      <td>Stevie Allen</td>
+      <td>actor</td>
+      <td>Murderer</td>
+      <td>21.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>2014</td>
+      <td>Moyo Akand?</td>
+      <td>actress</td>
+      <td>Witch</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+%%timeit
+
+c.loc['Macbeth']
+```
+
+    1.08 ms ± 2.13 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+
+
+* 더 빠른 작업을 위해 인덱스를 정렬한다.
+
+
+```python
+cs = cast.set_index(['title']).sort_index()
+cs.tail(4)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>xXx: Return of Xander Cage</th>
+      <td>2017</td>
+      <td>Julie Abcede</td>
+      <td>actor</td>
+      <td>Catwalk Partiers</td>
+      <td>84.0</td>
+    </tr>
+    <tr>
+      <th>xXx: Return of Xander Cage</th>
+      <td>2017</td>
+      <td>Jeimi Abila</td>
+      <td>actress</td>
+      <td>Lazarus' Girls</td>
+      <td>64.0</td>
+    </tr>
+    <tr>
+      <th>xXx: Return of Xander Cage</th>
+      <td>2017</td>
+      <td>Wayne Ambrose</td>
+      <td>actor</td>
+      <td>Choir Members</td>
+      <td>34.0</td>
+    </tr>
+    <tr>
+      <th>xXx: State of the Union</th>
+      <td>2005</td>
+      <td>Robert Alonzo</td>
+      <td>actor</td>
+      <td>Guard</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+%%time
+cs.loc['Macbeth']
+```
+
+    CPU times: user 20.3 ms, sys: 804 µs, total: 21.1 ms
+    Wall time: 22.7 ms
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Macbeth</th>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1997</td>
+      <td>Stevie Allen</td>
+      <td>actor</td>
+      <td>Murderer</td>
+      <td>21.0</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>2014</td>
+      <td>Moyo Akand?</td>
+      <td>actress</td>
+      <td>Witch</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Macbeth</th>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+%%timeit
+
+cs.loc['Macbeth']
+```
+
+    70 µs ± 392 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+
+
+### Multiple index
+
+데이터에 여러 인덱스를 갖게 할 수 있다.
+
+
+```python
+cm = cast.set_index(['title', 'n']).sort_index()
+cm.tail(30)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th>n</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Zwei in einem Anzug</th>
+      <th>2.0</th>
+      <td>1950</td>
+      <td>Wolf Albach-Retty</td>
+      <td>actor</td>
+      <td>Otto Vogel</td>
+    </tr>
+    <tr>
+      <th>Zwei in einem Auto</th>
+      <th>2.0</th>
+      <td>1951</td>
+      <td>Wolf Albach-Retty</td>
+      <td>actor</td>
+      <td>Georg Schmittlein</td>
+    </tr>
+    <tr>
+      <th>Zweimal zwei im Himmelbett</th>
+      <th>1.0</th>
+      <td>1937</td>
+      <td>Georg Alexander</td>
+      <td>actor</td>
+      <td>Arnd Krusemark</td>
+    </tr>
+    <tr>
+      <th>Zwischen Lachen und Weinen</th>
+      <th>NaN</th>
+      <td>1919</td>
+      <td>Georg Alexander</td>
+      <td>actor</td>
+      <td>Hans</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">Zwischen Pankow und Zehlendorf</th>
+      <th>3.0</th>
+      <td>1991</td>
+      <td>Kathrin Ackermann</td>
+      <td>actress</td>
+      <td>Nora Permont</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>1991</td>
+      <td>Eugen Albert</td>
+      <td>actor</td>
+      <td>Soldat</td>
+    </tr>
+    <tr>
+      <th>Zwischen Welten</th>
+      <th>2.0</th>
+      <td>2014</td>
+      <td>Mohsin Ahmady</td>
+      <td>actor</td>
+      <td>Tarik</td>
+    </tr>
+    <tr>
+      <th>Zwischen den Sternen</th>
+      <th>2.0</th>
+      <td>2002</td>
+      <td>Fatih Alas</td>
+      <td>actor</td>
+      <td>Umut</td>
+    </tr>
+    <tr>
+      <th>Zwischen vierzehn und siebzehn - Sexualnot der Jugend</th>
+      <th>5.0</th>
+      <td>1929</td>
+      <td>Fritz Alberti</td>
+      <td>actor</td>
+      <td>Parent</td>
+    </tr>
+    <tr>
+      <th>Zwischengleis</th>
+      <th>7.0</th>
+      <td>1978</td>
+      <td>Alexander Allerson</td>
+      <td>actor</td>
+      <td>Bolle</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">Zyat iz provintsii</th>
+      <th>NaN</th>
+      <td>1987</td>
+      <td>Dinmukhamet Akhimov</td>
+      <td>actor</td>
+      <td>?Taksist?</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>1987</td>
+      <td>Kalampyr Ajsangaliyeva</td>
+      <td>actress</td>
+      <td>Luzhan</td>
+    </tr>
+    <tr>
+      <th>Zzikhimyeon jukneunda</th>
+      <th>3.0</th>
+      <td>2000</td>
+      <td>Jae-hwan Ahn</td>
+      <td>actor</td>
+      <td>The Teacher</td>
+    </tr>
+    <tr>
+      <th>bestefreunde</th>
+      <th>3.0</th>
+      <td>2014</td>
+      <td>Tina Amon Amonsen</td>
+      <td>actress</td>
+      <td>Vivian</td>
+    </tr>
+    <tr>
+      <th>bwoy</th>
+      <th>NaN</th>
+      <td>2016</td>
+      <td>Drew (IV) Allen</td>
+      <td>actor</td>
+      <td>Boss</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">eCupid</th>
+      <th>33.0</th>
+      <td>2011</td>
+      <td>Christy Alvarado</td>
+      <td>actress</td>
+      <td>Patron</td>
+    </tr>
+    <tr>
+      <th>47.0</th>
+      <td>2011</td>
+      <td>Shon Abram</td>
+      <td>actor</td>
+      <td>Patron</td>
+    </tr>
+    <tr>
+      <th>el Ziara</th>
+      <th>NaN</th>
+      <td>2014</td>
+      <td>Manel Abdelkoui</td>
+      <td>actor</td>
+      <td>Randa</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">fl 19,99</th>
+      <th>NaN</th>
+      <td>1998</td>
+      <td>Thomas Acda</td>
+      <td>actor</td>
+      <td>Harrie Harings</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>1998</td>
+      <td>Marijke Aerts</td>
+      <td>actress</td>
+      <td>Mevrouw van Veen</td>
+    </tr>
+    <tr>
+      <th>iBoy</th>
+      <th>9.0</th>
+      <td>2017</td>
+      <td>Shaquille Ali-Yebuah</td>
+      <td>actor</td>
+      <td>Cass</td>
+    </tr>
+    <tr>
+      <th>inter.m@tes</th>
+      <th>6.0</th>
+      <td>2004</td>
+      <td>Jojo Alejar</td>
+      <td>actor</td>
+      <td>Gus 'Hopeless' Geronimo</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">kingdom of ants</th>
+      <th>NaN</th>
+      <td>2016</td>
+      <td>Zayar Abdulla</td>
+      <td>actor</td>
+      <td>Hadi</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>2016</td>
+      <td>Rupak Abdulkadr</td>
+      <td>actress</td>
+      <td>Rupak mother</td>
+    </tr>
+    <tr>
+      <th>les aventures d'archives</th>
+      <th>NaN</th>
+      <td>2016</td>
+      <td>Buzz Aldrin</td>
+      <td>actor</td>
+      <td>Himself</td>
+    </tr>
+    <tr>
+      <th>w Delta z</th>
+      <th>8.0</th>
+      <td>2007</td>
+      <td>Barbara Adair</td>
+      <td>actress</td>
+      <td>Alice Jackson</td>
+    </tr>
+    <tr>
+      <th rowspan="3" valign="top">xXx: Return of Xander Cage</th>
+      <th>34.0</th>
+      <td>2017</td>
+      <td>Wayne Ambrose</td>
+      <td>actor</td>
+      <td>Choir Members</td>
+    </tr>
+    <tr>
+      <th>64.0</th>
+      <td>2017</td>
+      <td>Jeimi Abila</td>
+      <td>actress</td>
+      <td>Lazarus' Girls</td>
+    </tr>
+    <tr>
+      <th>84.0</th>
+      <td>2017</td>
+      <td>Julie Abcede</td>
+      <td>actor</td>
+      <td>Catwalk Partiers</td>
+    </tr>
+    <tr>
+      <th>xXx: State of the Union</th>
+      <th>NaN</th>
+      <td>2005</td>
+      <td>Robert Alonzo</td>
+      <td>actor</td>
+      <td>Guard</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+cm.loc['Macbeth']
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+    </tr>
+    <tr>
+      <th>n</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4.0</th>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+    </tr>
+    <tr>
+      <th>6.0</th>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+    </tr>
+    <tr>
+      <th>18.0</th>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+    </tr>
+    <tr>
+      <th>21.0</th>
+      <td>1997</td>
+      <td>Stevie Allen</td>
+      <td>actor</td>
+      <td>Murderer</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+    </tr>
+    <tr>
+      <th>NaN</th>
+      <td>2014</td>
+      <td>Moyo Akand?</td>
+      <td>actress</td>
+      <td>Witch</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+cm.loc['Macbeth'].loc[4:18]
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+    </tr>
+    <tr>
+      <th>n</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4.0</th>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+    </tr>
+    <tr>
+      <th>6.0</th>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+    </tr>
+    <tr>
+      <th>18.0</th>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+cm.loc['Macbeth'].loc[4]
+```
+
+
+
+
+    year                        1916
+    name         Spottiswoode Aitken
+    type                       actor
+    character                 Duncan
+    Name: 4.0, dtype: object
+
+
+
+
+```python
+cm.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th>n</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>#1 Serial Killer</th>
+      <th>17.0</th>
+      <td>2013</td>
+      <td>Michael Alton</td>
+      <td>actor</td>
+      <td>Detective Roberts</td>
+    </tr>
+    <tr>
+      <th>#DigitalLivesMatter</th>
+      <th>NaN</th>
+      <td>2016</td>
+      <td>Rashan Ali</td>
+      <td>actress</td>
+      <td>News Reporter</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### reset index
+
+reset_index( ) 을 사용하여 인덱스를 제설정 할 수 있다.
+
+
+```python
+cm = cm.reset_index('n')
+cm.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>n</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+    </tr>
+    <tr>
+      <th>title</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>#1 Serial Killer</th>
+      <td>17.0</td>
+      <td>2013</td>
+      <td>Michael Alton</td>
+      <td>actor</td>
+      <td>Detective Roberts</td>
+    </tr>
+    <tr>
+      <th>#DigitalLivesMatter</th>
+      <td>NaN</td>
+      <td>2016</td>
+      <td>Rashan Ali</td>
+      <td>actress</td>
+      <td>News Reporter</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## CSV library
+
+### read file
+
+
+```python
+import csv
+titles = list(csv.DictReader(open('./pythondsp-pandasguide-b936c3b43406/data/titles.csv')))
+titles[0:5]
+```
+
+
+
+
+    [{'title': 'The Rising Son', 'year': '1990'},
+     {'title': 'The Thousand Plane Raid', 'year': '1969'},
+     {'title': 'Crucea de piatra', 'year': '1993'},
+     {'title': 'Country', 'year': '2000'},
+     {'title': 'Gaiking II', 'year': '2011'}]
+
+
+
+
+```python
+titles[-5:]
+```
+
+
+
+
+    [{'title': 'Rebel', 'year': '1970'},
+     {'title': 'Suzanne', 'year': '1996'},
+     {'title': 'Bomba', 'year': '2013'},
+     {'title': 'Aao Jao Ghar Tumhara', 'year': '1984'},
+     {'title': 'Mrs. Munck', 'year': '1995'}]
+
+
+
+* 별도의 행에 제목과 연도 표시
+
+
+```python
+for k, v in titles[0].items():
+    print(k, ':', v)
+```
+
+    title : The Rising Son
+    year : 1990
+
+
+### 연도에 따라 영화 표시
+
+* 1985년의 모든 영화 표시
+
+
+```python
+year85 = [a for a in titles if a['year']=='1985']
+year85[:5]
+```
+
+
+
+
+    [{'title': 'Insaaf Main Karoonga', 'year': '1985'},
+     {'title': 'Vivre pour survivre', 'year': '1985'},
+     {'title': 'Water', 'year': '1985'},
+     {'title': 'Doea tanda mata', 'year': '1985'},
+     {'title': 'Koritsia gia tsibima', 'year': '1985'}]
+
+
+
+* 1990~1999년 영화표시
+
+
+```python
+movies90 = [m for m in titles if (int(m['year'])<int('2000')) and (int(m['year'])>int('1989'))]
+movies90[:5]
+```
+
+
+
+
+    [{'title': 'The Rising Son', 'year': '1990'},
+     {'title': 'Crucea de piatra', 'year': '1993'},
+     {'title': 'Poka Makorer Ghar Bosoti', 'year': '1996'},
+     {'title': 'Maa Durga Shakti', 'year': '1999'},
+     {'title': 'Conflict of Interest', 'year': '1993'}]
+
+
+
+* 모든 'Macbeth' 찾기
+
+
+```python
+macbeth = [m for m in titles if m['title']=='Macbeth']
+macbeth[:3]
+```
+
+
+
+
+    [{'title': 'Macbeth', 'year': '1913'},
+     {'title': 'Macbeth', 'year': '2006'},
+     {'title': 'Macbeth', 'year': '2013'}]
+
+
+
+### itemgetter
+
+* 연도별로 영화 정렬
+
+
+```python
+from operator import itemgetter
+sorted(macbeth, key=itemgetter('year'))[:3]
+```
+
+
+
+
+    [{'title': 'Macbeth', 'year': '1913'},
+     {'title': 'Macbeth', 'year': '1997'},
+     {'title': 'Macbeth', 'year': '1998'}]
+
+
+
+### 공백 0으로 채우기
+
+
+```python
+casts = list(csv.DictReader(open('./pythondsp-pandasguide-b936c3b43406/data/cast.csv')))
+```
+
+
+```python
+casts[3:5]
+```
+
+
+
+
+    [{'title': 'Secret in Their Eyes',
+      'year': '2015',
+      'name': '$hutter',
+      'type': 'actor',
+      'character': '2002 Dodger Fan',
+      'n': ''},
+     {'title': 'Steve Jobs',
+      'year': '2015',
+      'name': '$hutter',
+      'type': 'actor',
+      'character': '1988 Opera House Patron',
+      'n': ''}]
+
+
+
+* 0으로 대체
+
+
+```python
+cast0 = [{**c, 'n':c['n'].replace('', '0')} for c in casts]
+cast0[3:5]
+```
+
+
+
+
+    [{'title': 'Secret in Their Eyes',
+      'year': '2015',
+      'name': '$hutter',
+      'type': 'actor',
+      'character': '2002 Dodger Fan',
+      'n': '0'},
+     {'title': 'Steve Jobs',
+      'year': '2015',
+      'name': '$hutter',
+      'type': 'actor',
+      'character': '1988 Opera House Patron',
+      'n': '0'}]
+
+
+
+* Maa 로 시작하는 영화
+
+
+```python
+maa = [m for m in titles if m['title'].startswith('Maa')]
+maa[:3]
+```
+
+
+
+
+    [{'title': 'Maa Durga Shakti', 'year': '1999'},
+     {'title': 'Maarek hob', 'year': '2004'},
+     {'title': 'Maa Aur Mamta', 'year': '1970'}]
+
+
+
+### collections.counter
+
+* 연도별로 영화계산
+
+
+```python
+from collections import Counter
+
+by_year = Counter(t['year']for t in titles)
+by_year.most_common(3)
+```
+
+
+
+
+    [('2016', 2363), ('2017', 2138), ('2015', 1849)]
+
+
+
+
+```python
+import matplotlib.pyplot as plt
+
+data = by_year.most_common(len(titles))
+data = sorted(data)
+x = [c[0] for c in data]
+y = [c[1] for c in data]
+plt.plot(x, y)
+plt.show()
+```
+
+
+    
+![png](output_73_0.png)
+    
+
+
+### collections.defaultdict
+
+* 연도별로 dictionary에 영화 추가
+
+
+```python
+from collections import defaultdict
+```
+
+
+```python
+d = defaultdict(list)
+for row in titles:
+    d[row['year']].append(row['title'])
+    
+xx=[]
+yy=[]
+for k, v in d.items():
+    xx.append(k)
+    yy.append(len(v))
+
+plt.plot(sorted(xx), yy)
+plt.show()
+```
+
+
+    
+![png](output_76_0.png)
+    
+
+
+
+```python
+xx[:5]
+```
+
+
+
+
+    ['1990', '1969', '1993', '2000', '2011']
+
+
+
+
+```python
+yy[:5]
+```
+
+
+
+
+    [515, 465, 437, 616, 1457]
+
+
+
+* Aaron Abrams 의 모든 영화 보기
+
+
+```python
+cf = [c for c in casts if c['name']=='Aaron Abrams']
+cf[:3]
+```
+
+
+
+
+    [{'title': '#FromJennifer',
+      'year': '2017',
+      'name': 'Aaron Abrams',
+      'type': 'actor',
+      'character': 'Ralph Sinclair',
+      'n': ''},
+     {'title': '388 Arletta Avenue',
+      'year': '2011',
+      'name': 'Aaron Abrams',
+      'type': 'actor',
+      'character': 'Alex',
+      'n': '4'},
+     {'title': 'Amelia',
+      'year': '2009',
+      'name': 'Aaron Abrams',
+      'type': 'actor',
+      'character': 'Slim Gordon',
+      'n': '8'}]
+
+
+
+
+```python
+dcf = defaultdict(list)
+for row in cf:
+    dcf[row['year']].append(row['title'])
+    
+dcf
+```
+
+
+
+
+    defaultdict(list,
+                {'2017': ['#FromJennifer', 'The Go-Getters'],
+                 '2011': ['388 Arletta Avenue',
+                  'Jesus Henry Christ',
+                  'Jesus Henry Christ',
+                  'Take This Waltz',
+                  'The Chicago 8'],
+                 '2009': ['Amelia', 'At Home by Myself... with You'],
+                 '2005': ['Cinderella Man', 'Sabah'],
+                 '2015': ['Closet Monster', 'Regression'],
+                 '2018': ['Code 8'],
+                 '2007': ['Firehouse Dog', 'Young People Fucking'],
+                 '2008': ['Flash of Genius'],
+                 '2013': ['It Was You Charlie'],
+                 '2004': ['Resident Evil: Apocalypse', 'Siblings'],
+                 '2003': ['The In-Laws', 'The Visual Bible: The Gospel of John'],
+                 '2006': ['Zoom']})
+
+
