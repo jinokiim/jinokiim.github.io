@@ -4,8 +4,8 @@ title: Chapter 4
 subtitle: 리스트와 반복문
 gh-repo: jinokiim/jinokiim.github.io
 gh-badge: [star, fork, follow]
-thumbnail-img: /assets/img/pythonlogo.png
-cover-img: /assets/img/pythonbglogo.png
+thumbnail-img: /assets/img/python/pythonlogo.png
+cover-img: /assets/img/python/pythonbglogo.png
 tags: [Python]
 comments: true
 ---
