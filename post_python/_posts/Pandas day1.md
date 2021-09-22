@@ -1,0 +1,3481 @@
+# Pandas 기초
+
+Pandas는 데이터를 빠르게 처리하기 위한 도구중 하나이다.  
+Matplotlib 라이브러리와 잘 통합되어 데이터를 분석하는데 유용하다.
+
+
+```python
+import pandas as pd
+```
+
+## Series( )
+
+모든 목록, 튜플, 딕셔너리는 series 메소드를 사용하여 변환할수 있다.  
+튜플변환에서 인덱스는 0,1,2 .. 로 설정된다.
+
+
+```python
+# 튜플 타입을 변환
+h = ('AA', '2012-02-01', 100, 10.2)
+s = pd.Series(h)
+
+type(s)
+print(s)
+```
+
+    0            AA
+    1    2012-02-01
+    2           100
+    3          10.2
+    dtype: object
+
+
+
+```python
+# dictionary 타입을 변환
+d = {'name' : 'IBM',
+     'date' : '2010-09-08', 
+     'shares' : 100, 
+     'price' : 10.2
+    }
+ds = pd.Series(d)
+
+type(ds)
+print(ds)
+```
+
+    name             IBM
+    date      2010-09-08
+    shares           100
+    price           10.2
+    dtype: object
+
+
+
+```python
+# list 타입을 변환
+f = ['FB', '2001-08-02', 90 ,3.2]
+f = pd.Series(f, index = ['name', 'date', 'shares', 'price'])
+
+print(f)
+```
+
+    name              FB
+    date      2001-08-02
+    shares            90
+    price            3.2
+    dtype: object
+
+
+* 인덱스의 이름을 통해서 접근할 수 있다.
+
+
+```python
+f['shares']
+```
+
+
+
+
+    90
+
+
+
+
+```python
+f[0]
+```
+
+
+
+
+    'FB'
+
+
+
+
+```python
+f[['shares', 'price']]
+```
+
+
+
+
+    shares     90
+    price     3.2
+    dtype: object
+
+
+
+### DataFrame
+
+dataframe은 pandas에서 널리 사용되는 데이터 구조이다.  
+2차원 배열과 함께 사용할 수 있다.  
+dataframe 에는 '행 인덱스'와 '열 인덱스' 가 있다.  
+dataframe을 생성하는 가장 일반적인 방법은 목록 딕셔너리를 사용하는 것이다.  
+
+
+```python
+data = {
+    'name' : ['AA', 'IBM', 'GOOG'],
+    'date' : ['2001-12-01', '2012-02-10', '2010-04-09'],
+    'shares' : [100, 30, 90],
+    'price' : [12.3, 10.3, 32.2]
+}
+df = pd.DataFrame(data)
+type(df)
+```
+
+
+
+
+    pandas.core.frame.DataFrame
+
+
+
+
+```python
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>date</th>
+      <th>shares</th>
+      <th>price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>AA</td>
+      <td>2001-12-01</td>
+      <td>100</td>
+      <td>12.3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>IBM</td>
+      <td>2012-02-10</td>
+      <td>30</td>
+      <td>10.3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GOOG</td>
+      <td>2010-04-09</td>
+      <td>90</td>
+      <td>32.2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+이후 열을 추가할 수 있다.
+
+
+```python
+df['owner'] = 'Unknown'
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>date</th>
+      <th>shares</th>
+      <th>price</th>
+      <th>owner</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>AA</td>
+      <td>2001-12-01</td>
+      <td>100</td>
+      <td>12.3</td>
+      <td>Unknown</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>IBM</td>
+      <td>2012-02-10</td>
+      <td>30</td>
+      <td>10.3</td>
+      <td>Unknown</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>GOOG</td>
+      <td>2010-04-09</td>
+      <td>90</td>
+      <td>32.2</td>
+      <td>Unknown</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+0, 1, 2 로 설정된 행 인덱스를 변경
+
+
+```python
+df.index = ['one', 'two', 'three']
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>date</th>
+      <th>shares</th>
+      <th>price</th>
+      <th>owner</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>one</th>
+      <td>AA</td>
+      <td>2001-12-01</td>
+      <td>100</td>
+      <td>12.3</td>
+      <td>Unknown</td>
+    </tr>
+    <tr>
+      <th>two</th>
+      <td>IBM</td>
+      <td>2012-02-10</td>
+      <td>30</td>
+      <td>10.3</td>
+      <td>Unknown</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>GOOG</td>
+      <td>2010-04-09</td>
+      <td>90</td>
+      <td>32.2</td>
+      <td>Unknown</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* set_index( ) 를 사용하여 'name'을 인덱스로 설정
+
+
+```python
+df = df.set_index(['name'])
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>shares</th>
+      <th>price</th>
+      <th>owner</th>
+    </tr>
+    <tr>
+      <th>name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AA</th>
+      <td>2001-12-01</td>
+      <td>100</td>
+      <td>12.3</td>
+      <td>Unknown</td>
+    </tr>
+    <tr>
+      <th>IBM</th>
+      <td>2012-02-10</td>
+      <td>30</td>
+      <td>10.3</td>
+      <td>Unknown</td>
+    </tr>
+    <tr>
+      <th>GOOG</th>
+      <td>2010-04-09</td>
+      <td>90</td>
+      <td>32.2</td>
+      <td>Unknown</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* shares 인덱스에 접근
+
+
+```python
+df['shares']
+```
+
+
+
+
+    name
+    AA      100
+    IBM      30
+    GOOG     90
+    Name: shares, dtype: int64
+
+
+
+* .loc[ ] : 행과 열의 요소를 이용하여 접근
+
+
+```python
+df.loc['AA']
+```
+
+
+
+
+    date      2001-12-01
+    shares           100
+    price           12.3
+    owner        Unknown
+    Name: AA, dtype: object
+
+
+
+
+```python
+df.loc['AA', 'price']
+```
+
+
+
+
+    12.3
+
+
+
+* .iloc[ ] : 행과 열의 위치를 이용하여 접근
+
+
+```python
+# 행과 열의 위치로 접근
+df.iloc[1]
+```
+
+
+
+
+    date      2012-02-10
+    shares            30
+    price           10.3
+    owner        Unknown
+    Name: IBM, dtype: object
+
+
+
+
+```python
+df.iloc[1, 2]
+```
+
+
+
+
+    10.3
+
+
+
+### del drop 을 이용하여 삭제
+
+
+```python
+del df['owner']
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>shares</th>
+      <th>price</th>
+    </tr>
+    <tr>
+      <th>name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AA</th>
+      <td>2001-12-01</td>
+      <td>100</td>
+      <td>12.3</td>
+    </tr>
+    <tr>
+      <th>IBM</th>
+      <td>2012-02-10</td>
+      <td>30</td>
+      <td>10.3</td>
+    </tr>
+    <tr>
+      <th>GOOG</th>
+      <td>2010-04-09</td>
+      <td>90</td>
+      <td>32.2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.drop('shares', axis = 1)
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>shares</th>
+      <th>price</th>
+    </tr>
+    <tr>
+      <th>name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AA</th>
+      <td>2001-12-01</td>
+      <td>100</td>
+      <td>12.3</td>
+    </tr>
+    <tr>
+      <th>IBM</th>
+      <td>2012-02-10</td>
+      <td>30</td>
+      <td>10.3</td>
+    </tr>
+    <tr>
+      <th>GOOG</th>
+      <td>2010-04-09</td>
+      <td>90</td>
+      <td>32.2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+## Overview
+
+### 파일 읽기
+
+
+```python
+casts = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/cast.csv',
+                    index_col=None, encoding='utf-8')
+casts.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suuri illusioni</td>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* read_csv : csv 파일의 데이터를 읽는다.
+* index_col=None : 인덱스가 None. 첫번째 열이 인덱스가 된다.
+* head( ) : Dataframe의 처음 5개 요소 표시
+* tail( ) : Dataframe의 마지막 5개 요소 표시
+
+
+```python
+casts
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suuri illusioni</td>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>74996</th>
+      <td>Mia fora kai ena... moro</td>
+      <td>2011</td>
+      <td>Penelope Anastasopoulou</td>
+      <td>actress</td>
+      <td>Popi voulkanizater</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>74997</th>
+      <td>The Magician King</td>
+      <td>2004</td>
+      <td>Tiannah Anastassiades</td>
+      <td>actress</td>
+      <td>Unicycle Race Attendant</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>74998</th>
+      <td>Festival of Lights</td>
+      <td>2010</td>
+      <td>Zoe Anastassiou</td>
+      <td>actress</td>
+      <td>Guidance Counselor</td>
+      <td>20.0</td>
+    </tr>
+    <tr>
+      <th>74999</th>
+      <td>Toxic Tutu</td>
+      <td>2016</td>
+      <td>Zoe Anastassiou</td>
+      <td>actress</td>
+      <td>Demon of Toxicity</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>75000</th>
+      <td>Fugitive Pieces</td>
+      <td>2007</td>
+      <td>Anastassia Anastassopoulou</td>
+      <td>actress</td>
+      <td>Laundry Girl</td>
+      <td>25.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>75001 rows × 6 columns</p>
+</div>
+
+
+
+
+```python
+titles = pd.read_csv('./pythondsp-pandasguide-b936c3b43406/data/cast.csv',
+                    index_col=None, encoding='utf-8')
+```
+
+
+```python
+# 파일을 요약하여 표시
+pd.set_option('max_rows', 10, 'max_columns', 10)
+titles
+
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suuri illusioni</td>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>74996</th>
+      <td>Mia fora kai ena... moro</td>
+      <td>2011</td>
+      <td>Penelope Anastasopoulou</td>
+      <td>actress</td>
+      <td>Popi voulkanizater</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>74997</th>
+      <td>The Magician King</td>
+      <td>2004</td>
+      <td>Tiannah Anastassiades</td>
+      <td>actress</td>
+      <td>Unicycle Race Attendant</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>74998</th>
+      <td>Festival of Lights</td>
+      <td>2010</td>
+      <td>Zoe Anastassiou</td>
+      <td>actress</td>
+      <td>Guidance Counselor</td>
+      <td>20.0</td>
+    </tr>
+    <tr>
+      <th>74999</th>
+      <td>Toxic Tutu</td>
+      <td>2016</td>
+      <td>Zoe Anastassiou</td>
+      <td>actress</td>
+      <td>Demon of Toxicity</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>75000</th>
+      <td>Fugitive Pieces</td>
+      <td>2007</td>
+      <td>Anastassia Anastassopoulou</td>
+      <td>actress</td>
+      <td>Laundry Girl</td>
+      <td>25.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>75001 rows × 6 columns</p>
+</div>
+
+
+
+
+```python
+pd.options.display.max_rows=20
+pd.options.display.min_rows=20     # 전체는 None 
+titles
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Suuri illusioni</td>
+      <td>1985</td>
+      <td>Homo $</td>
+      <td>actor</td>
+      <td>Guests</td>
+      <td>22.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Straight Outta Compton</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Club Patron</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Straight Outta Compton</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Dopeman</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>For Thy Love 2</td>
+      <td>2009</td>
+      <td>Bee Moe $lim</td>
+      <td>actor</td>
+      <td>Thug 1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Lapis, Ballpen at Diploma, a True to Life Journey</td>
+      <td>2014</td>
+      <td>Jori ' Danilo' Jurado Jr.</td>
+      <td>actor</td>
+      <td>Jaime (young)</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Desire (III)</td>
+      <td>2014</td>
+      <td>Syaiful 'Ariffin</td>
+      <td>actor</td>
+      <td>Actor Playing Eteocles from 'Antigone'</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>74991</th>
+      <td>The Hanover House</td>
+      <td>2014</td>
+      <td>Jenny Anastasoff</td>
+      <td>actress</td>
+      <td>Patience Blake</td>
+      <td>9.0</td>
+    </tr>
+    <tr>
+      <th>74992</th>
+      <td>The Deal</td>
+      <td>2008</td>
+      <td>Julia Anastasopoulos</td>
+      <td>actress</td>
+      <td>Camera Assistant</td>
+      <td>51.0</td>
+    </tr>
+    <tr>
+      <th>74993</th>
+      <td>I teliki apopliromi</td>
+      <td>2013</td>
+      <td>Mara Anastasopoulou</td>
+      <td>actress</td>
+      <td>Marina's friend</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>74994</th>
+      <td>180 moires</td>
+      <td>2010</td>
+      <td>Penelope Anastasopoulou</td>
+      <td>actress</td>
+      <td>Korina</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>74995</th>
+      <td>Ama de se thelei</td>
+      <td>2009</td>
+      <td>Penelope Anastasopoulou</td>
+      <td>actress</td>
+      <td>Dimitra</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>74996</th>
+      <td>Mia fora kai ena... moro</td>
+      <td>2011</td>
+      <td>Penelope Anastasopoulou</td>
+      <td>actress</td>
+      <td>Popi voulkanizater</td>
+      <td>11.0</td>
+    </tr>
+    <tr>
+      <th>74997</th>
+      <td>The Magician King</td>
+      <td>2004</td>
+      <td>Tiannah Anastassiades</td>
+      <td>actress</td>
+      <td>Unicycle Race Attendant</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>74998</th>
+      <td>Festival of Lights</td>
+      <td>2010</td>
+      <td>Zoe Anastassiou</td>
+      <td>actress</td>
+      <td>Guidance Counselor</td>
+      <td>20.0</td>
+    </tr>
+    <tr>
+      <th>74999</th>
+      <td>Toxic Tutu</td>
+      <td>2016</td>
+      <td>Zoe Anastassiou</td>
+      <td>actress</td>
+      <td>Demon of Toxicity</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>75000</th>
+      <td>Fugitive Pieces</td>
+      <td>2007</td>
+      <td>Anastassia Anastassopoulou</td>
+      <td>actress</td>
+      <td>Laundry Girl</td>
+      <td>25.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>75001 rows × 6 columns</p>
+</div>
+
+
+
+## Data operations
+
+
+```python
+t = titles['title']
+type(t)
+```
+
+
+
+
+    pandas.core.series.Series
+
+
+
+
+```python
+t.head()
+```
+
+
+
+
+    0          Closet Monster
+    1         Suuri illusioni
+    2     Battle of the Sexes
+    3    Secret in Their Eyes
+    4              Steve Jobs
+    Name: title, dtype: object
+
+
+
+
+```python
+titles.iloc[0]
+```
+
+
+
+
+    title        Closet Monster
+    year                   2015
+    name               Buffy #1
+    type                  actor
+    character           Buffy 4
+    n                        31
+    Name: 0, dtype: object
+
+
+
+### Filter data
+
+dataframe 에서 일부 bool표현식을 이용하여 데이터를 필터링 할 수 있다.
+
+
+```python
+after85 = titles[titles['year']>1985]
+after85.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Closet Monster</td>
+      <td>2015</td>
+      <td>Buffy #1</td>
+      <td>actor</td>
+      <td>Buffy 4</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Battle of the Sexes</td>
+      <td>2017</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Bobby Riggs Fan</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Straight Outta Compton</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Club Patron</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* True 를 표시하는 대신에 해당하는 모든 결과를 표시한다.
+* & 와 | 는 두 조건을 결합하는데 사용할 수 있다.
+
+
+```python
+t = titles
+movies90 = t[(t['year']>=1990) & (t['year']<2000)]
+movies90.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>12</th>
+      <td>Mixing Nia</td>
+      <td>1998</td>
+      <td>Michael 'babeepower' Viera</td>
+      <td>actor</td>
+      <td>Rapper</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Mariano Mison... NBI</td>
+      <td>1997</td>
+      <td>Joseph 'Byron' Sese</td>
+      <td>actor</td>
+      <td>Putik's Son</td>
+      <td>31.0</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Pelotazo nacional</td>
+      <td>1993</td>
+      <td>F?lix 'El Gato'</td>
+      <td>actor</td>
+      <td>Rebolledo</td>
+      <td>12.0</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Killing Device</td>
+      <td>1993</td>
+      <td>Van 'Igor' Morrison</td>
+      <td>actor</td>
+      <td>Jeep Driver</td>
+      <td>51.0</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>Violencia urbana</td>
+      <td>1996</td>
+      <td>N?stor 'Kick Boxer'</td>
+      <td>actor</td>
+      <td>Monta?a</td>
+      <td>21.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+macbeth = t[t['title'] == 'Macbeth']
+macbeth.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>12868</th>
+      <td>Macbeth</td>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22302</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>25855</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>26990</th>
+      <td>Macbeth</td>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>38090</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Sorting
+
+sort_index 또는 sort_values 를 사용하여 정렬할 수 있다.
+
+
+```python
+macbeth = t[t['title'] == 'Macbeth'].sort_index()
+macbeth.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>12868</th>
+      <td>Macbeth</td>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22302</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>25855</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>26990</th>
+      <td>Macbeth</td>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>38090</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+macbeth = t[t['title'] == 'Macbeth'].sort_values('year')
+macbeth.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>22302</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>63776</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>25855</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>38090</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+    <tr>
+      <th>40639</th>
+      <td>Macbeth</td>
+      <td>1997</td>
+      <td>Stevie Allen</td>
+      <td>actor</td>
+      <td>Murderer</td>
+      <td>21.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Null values
+
+
+```python
+casts.loc[3:4]
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### isnull( ) : null 값이 있는 경우 True를 반환
+
+
+```python
+c = casts
+c['n'].isnull().head()
+```
+
+
+
+
+    0    False
+    1    False
+    2    False
+    3     True
+    4     True
+    Name: n, dtype: bool
+
+
+
+### notnull( ) : null이 아닌 값에 True를 반환
+
+
+```python
+c['n'].notnull().head()
+```
+
+
+
+
+    0     True
+    1     True
+    2     True
+    3    False
+    4    False
+    Name: n, dtype: bool
+
+
+
+
+```python
+c[c['n'].isnull()].head(3)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Straight Outta Compton</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>Club Patron</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+c_fill = c[c['n'].isnull()].fillna('NA')
+c_fill.head(2)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3</th>
+      <td>Secret in Their Eyes</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>2002 Dodger Fan</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Steve Jobs</td>
+      <td>2015</td>
+      <td>$hutter</td>
+      <td>actor</td>
+      <td>1988 Opera House Patron</td>
+      <td>NA</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+import numpy as np
+```
+
+
+```python
+df = pd.DataFrame(dict(age = [np.NaN, np.NaN, 6],
+                      born = [pd.NaT, pd.Timestamp('1939-05-27'), pd.Timestamp('1940-04-25')],
+                      name = [np.NaN, 'Batman', ''],
+                      toy = [None, 'Batmobile', 'Joker']))
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NaN</td>
+      <td>1939-05-27</td>
+      <td>Batman</td>
+      <td>Batmobile</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### info( )
+
+데이터의 개략적인 정보를 파악하는데 유용하다.
+
+
+```python
+df.info(null_counts=True)
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 3 entries, 0 to 2
+    Data columns (total 4 columns):
+     #   Column  Non-Null Count  Dtype         
+    ---  ------  --------------  -----         
+     0   age     1 non-null      float64       
+     1   born    2 non-null      datetime64[ns]
+     2   name    2 non-null      object        
+     3   toy     2 non-null      object        
+    dtypes: datetime64[ns](1), float64(1), object(2)
+    memory usage: 224.0+ bytes
+
+
+
+```python
+df[df.age.isna()]
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>NaN</td>
+      <td>NaT</td>
+      <td>NaN</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NaN</td>
+      <td>1939-05-27</td>
+      <td>Batman</td>
+      <td>Batmobile</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df[df.age.notna()]
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.dropna()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.dropna(subset=['age'])
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.dropna(axis=1)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+    </tr>
+    <tr>
+      <th>1</th>
+    </tr>
+    <tr>
+      <th>2</th>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.dropna(inplace=True)
+```
+
+
+```python
+df[df.age.notna()].reset_index()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>index</th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df[df.age.notna()].reset_index(drop=True)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.age = df.age.fillna(0)
+df
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.fillna(method='bfill')
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>born</th>
+      <th>name</th>
+      <th>toy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>6.0</td>
+      <td>1940-04-25</td>
+      <td></td>
+      <td>Joker</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### string operations
+
+'.str' 옵션을 이용하여 문자열 연산을 수행할 수 있다.
+
+
+```python
+t = titles
+t[t['title'] == 'Macbeth']
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>12868</th>
+      <td>Macbeth</td>
+      <td>2015</td>
+      <td>Darren Adamson</td>
+      <td>actor</td>
+      <td>Soldier</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>22302</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Spottiswoode Aitken</td>
+      <td>actor</td>
+      <td>Duncan</td>
+      <td>4.0</td>
+    </tr>
+    <tr>
+      <th>25855</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>Robert Alan</td>
+      <td>actor</td>
+      <td>Third Murderer</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>26990</th>
+      <td>Macbeth</td>
+      <td>2016</td>
+      <td>John Albasiny</td>
+      <td>actor</td>
+      <td>Doctor</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>38090</th>
+      <td>Macbeth</td>
+      <td>1948</td>
+      <td>William Alland</td>
+      <td>actor</td>
+      <td>Second Murderer</td>
+      <td>18.0</td>
+    </tr>
+    <tr>
+      <th>40639</th>
+      <td>Macbeth</td>
+      <td>1997</td>
+      <td>Stevie Allen</td>
+      <td>actor</td>
+      <td>Murderer</td>
+      <td>21.0</td>
+    </tr>
+    <tr>
+      <th>60543</th>
+      <td>Macbeth</td>
+      <td>2014</td>
+      <td>Moyo Akand?</td>
+      <td>actress</td>
+      <td>Witch</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>63776</th>
+      <td>Macbeth</td>
+      <td>1916</td>
+      <td>Mary Alden</td>
+      <td>actress</td>
+      <td>Lady Macduff</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+t[t['title'].str.startswith("Maa")].head(3)
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>year</th>
+      <th>name</th>
+      <th>type</th>
+      <th>character</th>
+      <th>n</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1489</th>
+      <td>Maaro</td>
+      <td>2011</td>
+      <td>Abbas (VIII)</td>
+      <td>actor</td>
+      <td>Second Hero</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>6695</th>
+      <td>Maarek hob</td>
+      <td>2004</td>
+      <td>Robert Abyad</td>
+      <td>actor</td>
+      <td>Cr?ancier 1</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>17319</th>
+      <td>Maalik</td>
+      <td>2016</td>
+      <td>Farhan Ally Agha</td>
+      <td>actor</td>
+      <td>Major Haider</td>
+      <td>2.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### value_counts( )
+
+value_counts( ) 를 사용하여 총 발생 횟수를 계산 할 수 있다.
+
+
+```python
+t['year'].value_counts().head()
+```
+
+
+
+
+    2016    3841
+    2015    3439
+    2014    3309
+    2013    3110
+    2012    3011
+    Name: year, dtype: int64
+
+
+
+### matplot 라이브러리를 이용한 시각화
+
+
+```python
+import matplotlib.pyplot as plt
+t = titles
+p = t['year'].value_counts()
+p.plot()
+plt.show()
+```
+
+
+    
+![png](output_77_0.png)
+    
+
+
+* 인덱스를 정렬한 후 플롯하는 것이 좋다.
+
+
+```python
+# 자료 정렬
+p.sort_index().plot()
+plt.show()
+```
+
+
+    
+![png](output_79_0.png)
+    
+
+
+## Groupby
+
+
+```python
+cg = c.groupby(['year']).size()
+cg.plot()
+plt.show()
+```
+
+
+    
+![png](output_81_0.png)
+    
+
+
+
+```python
+c = casts
+cf = c[c['name'] == 'Aaron Abrams']
+cf.groupby(['year']).size().head
+```
+
+
+
+
+    <bound method NDFrame.head of year
+    2003    2
+    2004    2
+    2005    2
+    2006    1
+    2007    2
+    2008    1
+    2009    2
+    2011    5
+    2013    1
+    2015    2
+    2017    2
+    2018    1
+    dtype: int64>
+
+
+
+
+```python
+cf.groupby(['year', 'title']).size().head()
+```
+
+
+
+
+    year  title                               
+    2003  The In-Laws                             1
+          The Visual Bible: The Gospel of John    1
+    2004  Resident Evil: Apocalypse               1
+          Siblings                                1
+    2005  Cinderella Man                          1
+    dtype: int64
+
+
+
+
+```python
+c.groupby(['year']).n.max().head()
+```
+
+
+
+
+    year
+    1912     6.0
+    1913    14.0
+    1914    39.0
+    1915    14.0
+    1916    35.0
+    Name: n, dtype: float64
+
+
+
+
+```python
+c.groupby(['year']).n.min().head()
+```
+
+
+
+
+    year
+    1912    6.0
+    1913    1.0
+    1914    1.0
+    1915    1.0
+    1916    1.0
+    Name: n, dtype: float64
+
+
+
+
+```python
+c.groupby(['year']).n.mean().head()
+```
+
+
+
+
+    year
+    1912    6.000000
+    1913    4.142857
+    1914    7.085106
+    1915    4.236111
+    1916    5.037736
+    Name: n, dtype: float64
+
+
+
+
+```python
+decade = c['year']//10*10
+c_dec = c.groupby(decade).n.size()
+c_dec.head()
+```
+
+
+
+
+    year
+    1910     669
+    1920    1121
+    1930    3448
+    1940    3997
+    1950    3892
+    Name: n, dtype: int64
+
+
+
+### 문자열 처리 실습
+
+3개의 이메일 주소
+
+
+```python
+df1 = pd.DataFrame({'email':['happy@gmail.com', \
+                            '1004@naver.com', \
+                            'hello@nate.com']})
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* 공백 제거
+
+
+```python
+df1['email_strip'] = df1['email'].str.strip()  # 앞 뒤 공백 제거
+df1['email_lstrip'] = df1['email'].str.lstrip()  # 앞 공백 제거
+df1['email_rstrip'] = df1['email'].str.rstrip()  # 뒤 공백 제거
+
+df1
+
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_strip</th>
+      <th>email_lstrip</th>
+      <th>email_rstrip</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>happy@gmail.com</td>
+      <td>happy@gmail.com</td>
+      <td>happy@gmail.com</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>1004@naver.com</td>
+      <td>1004@naver.com</td>
+      <td>1004@naver.com</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>hello@nate.com</td>
+      <td>hello@nate.com</td>
+      <td>hello@nate.com</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* 고정 길이를 설정하고 나머지를 지정 문자열로 채운다
+
+
+```python
+df1['email_pad'] = df1['email'].str.pad(width=20, side='left', fillchar='_')
+df1['email_center'] = df1['email'].str.center(width=20, fillchar='_')
+df1['email_ljust'] = df1['email'].str.ljust(width=20, fillchar='_')
+df1['email_rjust'] = df1['email'].str.rjust(width=20, fillchar='_')
+df1['email_zfill'] = df1['email'].str.zfill(width=20)
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_pad</th>
+      <th>email_center</th>
+      <th>email_ljust</th>
+      <th>email_rjust</th>
+      <th>email_zfill</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>_____happy@gmail.com</td>
+      <td>__happy@gmail.com___</td>
+      <td>happy@gmail.com_____</td>
+      <td>_____happy@gmail.com</td>
+      <td>00000happy@gmail.com</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>______1004@naver.com</td>
+      <td>___1004@naver.com___</td>
+      <td>1004@naver.com______</td>
+      <td>______1004@naver.com</td>
+      <td>0000001004@naver.com</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>______hello@nate.com</td>
+      <td>___hello@nate.com___</td>
+      <td>hello@nate.com______</td>
+      <td>______hello@nate.com</td>
+      <td>000000hello@nate.com</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+* 분할하여 새로운 컬럼 생성
+
+
+```python
+df1[['email_split_1', 'email_split_2']] = df1['email'].str.split('@', n=1, expand=True)
+df1[['email_partition_1', 'email_partition_2', 'email_partition_3']] = df1['email'].str.partition(sep='@')
+df1[['email_rpartition_1', 'email_rpartition_2', 'email_rpartition_3']] = df1['email'].str.partition(sep='@')
+df1['email_rsplit_1'] = df1['email'].str.rsplit(pat='@')
+
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_split_1</th>
+      <th>email_split_2</th>
+      <th>email_partition_1</th>
+      <th>email_partition_2</th>
+      <th>email_partition_3</th>
+      <th>email_rpartition_1</th>
+      <th>email_rpartition_2</th>
+      <th>email_rpartition_3</th>
+      <th>email_rsplit_1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>happy</td>
+      <td>gmail.com</td>
+      <td>happy</td>
+      <td>@</td>
+      <td>gmail.com</td>
+      <td>happy</td>
+      <td>@</td>
+      <td>gmail.com</td>
+      <td>[happy, gmail.com]</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>1004</td>
+      <td>naver.com</td>
+      <td>1004</td>
+      <td>@</td>
+      <td>naver.com</td>
+      <td>1004</td>
+      <td>@</td>
+      <td>naver.com</td>
+      <td>[1004, naver.com]</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>hello</td>
+      <td>nate.com</td>
+      <td>hello</td>
+      <td>@</td>
+      <td>nate.com</td>
+      <td>hello</td>
+      <td>@</td>
+      <td>nate.com</td>
+      <td>[hello, nate.com]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# 모두 소문자로 변경
+df1['email_lower']      = df1['email'].str.lower()      
+
+# 모두 대문자로 변경
+df1['email_upper']      = df1['email'].str.upper()      
+
+# 앞문자 대문자로 변경
+df1['email_capitalize'] = df1['email'].str.capitalize() 
+
+# 단위별 앞문자 대문자로 변경
+df1['email_title']      = df1['email'].str.title()      
+
+# 소문자는 대문자, 대문자는 소문자로 변경 
+df1['email_swapcase']   = df1['email'].str.swapcase()   
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_lower</th>
+      <th>email_upper</th>
+      <th>email_capitalize</th>
+      <th>email_title</th>
+      <th>email_swapcase</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>happy@gmail.com</td>
+      <td>HAPPY@GMAIL.COM</td>
+      <td>Happy@gmail.com</td>
+      <td>Happy@Gmail.Com</td>
+      <td>HAPPY@GMAIL.COM</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>1004@naver.com</td>
+      <td>1004@NAVER.COM</td>
+      <td>1004@naver.com</td>
+      <td>1004@Naver.Com</td>
+      <td>1004@NAVER.COM</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>hello@nate.com</td>
+      <td>HELLO@NATE.COM</td>
+      <td>Hello@nate.com</td>
+      <td>Hello@Nate.Com</td>
+      <td>HELLO@NATE.COM</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# 왼쪽부터 sub값 검색후 위치반환
+df1['email_find']    = df1['email'].str.find(sub='.')        
+
+# 찾은 모든 값 반환
+df1['email_findall'] = df1['email'].str.findall(pat='[a-zA-Z]') 
+
+# 오른쪽부터 sub값 검색후 위치반환
+df1['email_rfind']   = df1['email'].str.rfind(sub='.')          
+
+# 왼쪽부터 sub값 검색후 위치반환
+df1['email_index']   = df1['email'].str.index(sub='.')          
+
+# 오른쪽부터 sub값 검색후 위치반환
+df1['email_rindex']  = df1['email'].str.rindex(sub='.')        
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_find</th>
+      <th>email_findall</th>
+      <th>email_rfind</th>
+      <th>email_index</th>
+      <th>email_rindex</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>11</td>
+      <td>[h, a, p, p, y, g, m, a, i, l, c, o, m]</td>
+      <td>11</td>
+      <td>11</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>10</td>
+      <td>[n, a, v, e, r, c, o, m]</td>
+      <td>10</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>10</td>
+      <td>[h, e, l, l, o, n, a, t, e, c, o, m]</td>
+      <td>10</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# 지정 위치값 반환
+df1['email_get'] = df1['email'].str.get(i=0)    
+
+# 인덱스 사이 값 반환
+df1['email_slice'] = df1['email'].str.slice(start=0, stop=5) 
+
+# 인덱스 사이 값을 다른 값으로 바꾼 후 값 반환
+df1['email_slice_replace'] = df1['email'].str.slice_replace(start=0, stop=5, repl='?')
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_get</th>
+      <th>email_slice</th>
+      <th>email_slice_replace</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>h</td>
+      <td>happy</td>
+      <td>?@gmail.com</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>1</td>
+      <td>1004@</td>
+      <td>?naver.com</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>h</td>
+      <td>hello</td>
+      <td>?@nate.com</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# 길이 반환
+df1['email_len']   = df1['email'].str.len()              
+
+# 문자열 중 패턴에 일치한 수 반환
+df1['email_count'] = df1['email'].str.count(pat='[0-9]')
+```
+
+
+```python
+# 알파벳 또는 숫자로만 구성 여부
+df1['email_isalnum']   = df1['email'].str.isalnum()   
+
+# 알파벳으로만 구성 여부
+df1['email_isalpha']   = df1['email'].str.isalpha()   
+
+# 숫자문자로만 구성 여부
+df1['email_isdecimal'] = df1['email'].str.isdecimal() 
+
+# 숫자문자로만 구성 여부
+df1['email_isdigit']   = df1['email'].str.isdigit()   
+
+# 소문자로만 구성 여부
+df1['email_islower']   = df1['email'].str.islower()   
+
+# 숫자문자로만 구성 여부
+df1['email_isnumeric'] = df1['email'].str.isnumeric() 
+
+# 공백(Whitespace)으로만 구성 여부
+df1['email_isspace']   = df1['email'].str.isspace()   
+
+# TitleCase형태로 구성 여부
+df1['email_istitle']   = df1['email'].str.istitle()   
+
+# 대문자로만 구성 여부
+df1['email_isupper']   = df1['email'].str.isupper()  
+df1
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>email</th>
+      <th>email_isalnum</th>
+      <th>email_isalpha</th>
+      <th>email_isdecimal</th>
+      <th>email_isdigit</th>
+      <th>email_islower</th>
+      <th>email_isnumeric</th>
+      <th>email_isspace</th>
+      <th>email_istitle</th>
+      <th>email_isupper</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>happy@gmail.com</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1004@naver.com</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>hello@nate.com</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
