@@ -1,3 +1,16 @@
+---
+layout: post
+title: Numpy
+subtitle: day 1
+gh-repo: jinokiim/jinokiim.github.io
+gh-badge: [star, fork, follow]
+thumbnail-img: /assets/img/pythonnumpy/numpythumb.png
+cover-img: /assets/img/python/numpy/numpybg.png
+tags: [Python, Numpy]
+comments: true
+---
+
+
 # numpy 기초
 
 **Numpy** 는 행렬 연산을 위한 핵심 라이브러리로 대규모 다차원 배열과 행렬 연산에 필요한 다양한 함수를 제공한다. 특히 메모리 버퍼에 배열 데이터를 저장하고 처리하는 효율적인 인터페이스를 제공한다.  
@@ -306,7 +319,7 @@ plt.show()
 
 
     
-![png](output_29_0.png)
+![png](/assets/img/python/numpy/numpyday1-output_29_0.png)
     
 
 
@@ -336,7 +349,7 @@ plt.show()
 
 
     
-![png](output_32_0.png)
+![png](/assets/img/python/numpy/numpyday1-output_32_0.png)
     
 
 
@@ -365,7 +378,7 @@ plt.show()
 
 
     
-![png](output_34_0.png)
+![png](/assets/img/python/numpy/numpyday1-output_34_0.png)
     
 
 
@@ -398,7 +411,7 @@ plt.show()
 
 
     
-![png](output_37_0.png)
+![png](/assets/img/python/numpy/numpyday1-output_37_0.png)
     
 
 
