@@ -1,3 +1,17 @@
+---
+layout: post
+title: 다이나믹 프로그래밍(Dynamic Programming)
+subtitle: 알고리즘 개념과 원리
+gh-repo: jinokiim/jinokiim.github.io
+gh-badge: [star, fork, follow]
+thumbnail-img: /assets/img/algorithmstudy/algorithmthumbnail.png
+cover-img: /assets/img//algorithmstudy/algorithmbg.jpg
+tags: [Python, algorithm]
+comments: true
+---
+
+
+
 # 다이나믹 프로그래밍(Dynamic Programming)
 
 
