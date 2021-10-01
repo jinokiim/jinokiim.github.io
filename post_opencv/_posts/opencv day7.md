@@ -1,0 +1,486 @@
+## 렌즈 왜곡(lens distortion)
+
+행렬식으로 표현할 수 없는 모양의 변환도 필요할 때가 있다. 물잔을 통해 비친 장면이나 반사된 모습 같은것이 에시이다.  
+이런 렌즈 왜곡 변환에 대해 알아보겠다.
+
+### 리매핑
+
+opencv는 규칙성 없이 마음대로 모양을 변환해 주는 함수로 cv2.remap()을 제공한다.
+
+##### dst = cv2.remap(src, mapx, mapy, interpolation [, dst, borderMode, borderValue ] )
+* src : 입력 영상
+* mapx, mapy : x축과 y축으로 이동할 좌표(index), src와 동일한 크기, dtype=float32
+* 나머지 인자는 cv2.warpAffine()과 동일
+* dst : 결과 영상
+
+cv2.remap()함수의 mapx, mapy는 입력 영상인 src와 같은 배열인 float32로 만들어야하고,  
+배열의 각 요소는 src의 같은 인덱스의 픽셀이 각각 x축과 y축으로 옮겨갈 새로운 인덱스를 갖게해야한다.  
+mapx[0][0] = 10, mapy[0][0] = 5 로 지정했다면 src의 (0,0)픽셀을 (10,5)로 옮기라는 의미이다.  
+이때 사용하는 함수가 np.indices()함수이다. 배열을 주어진 크기로 생성하는데, 자신의 인덱스 값으로 초기화해서 3차원 배열로 반환한다.  
+아래와 같이 사용한다.  
+
+##### mapx, mapy = np.indices( (rows, cols), dtype=np.float32)
+
+여기서 영상을 뒤집기 위한 행열식과 연산은 다음과 같다.
+![opencv](/assets/img/opencv/day7/opencvday7_1.png)
+
+* x' = cols -x -1
+* y' = rows -x -1
+
+
+* 변환 행렬과 리매핑으로 영상 뒤집기
+
+
+```python
+import cv2
+import numpy as np
+import time
+
+img = cv2.imread('./img/girl.jpg')
+rows, cols = img.shape[:2]
+
+# 변환행렬로 구현
+st = time.time()
+mflip = np.float32([ [-1, 0, cols-1], [0, -1, rows-1]])   # 변환행렬 생성
+fliped1 = cv2.warpAffine(img, mflip, (cols, rows))       # 변환 적용
+print('matrix:', time.time()-st)
+
+# remap 함수로 구현
+st2 = time.time()
+mapy, mapx = np.indices((rows, cols), dtype=np.float32)   # 매핑 배열 초기화 생성
+mapx = cols - mapx -1    # x축 좌표 뒤집기 연산
+mapy = rows - mapy -1    # y축 좌표 뒤집기 연산
+fliped2 = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)  # remap 적용
+print('remap:', time.time()-st2)
+
+cv2.imshow('origin', img)
+cv2.imshow('fliped1', fliped1)
+cv2.imshow('fliped2', fliped2)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+
+    matrix: 0.0014691352844238281
+    remap: 0.004033088684082031
+
+
+![opencv](/assets/img/opencv/day7/opencvday7_2.png)
+
+* 삼각함수를 이용한 비선형 리매핑
+
+
+```python
+import cv2
+import numpy as np
+
+l = 20   # 파장(wave length)
+amp = 15  # 진폭(amplitude)
+
+img = cv2.imread('./img/taekwonv1.jpg')
+rows, cols = img.shape[:2]
+
+# 초기 매핑 배열 생성
+mapy, mapx = np.indices((rows, cols), dtype=np.float32)
+
+# sin, cos함수를 잉요한 변형 매핑 연산
+sinx = mapx + amp * np.sin(mapy/l)
+cosy = mapy + amp * np.cos(mapx/l)
+
+# 영상 리매핑
+img_sinx = cv2.remap(img, sinx, mapy, cv2.INTER_LINEAR)
+img_cosy = cv2.remap(img, mapx, cosy, cv2.INTER_LINEAR)
+# x, y 축 모두 sin, cos 곡선 적용 및 외각 영역 보정
+img_both = cv2.remap(img, sinx, cosy, cv2.INTER_LINEAR, None, cv2.BORDER_REPLICATE)
+
+cv2.imshow('origin', img)
+cv2.imshow('sinx', img_sinx)
+cv2.imshow('cosy', img_cosy)
+cv2.imshow('sin cos', img_both)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+
+![opencv](/assets/img/opencv/day7/opencvday7_3.png)
+
+### 오목렌즈와 볼록렌즈 효과
+
+##### r, theta = cv2.cartToPolar(x, y) : 직교좌표 -> 극좌표 변환
+##### x, y = cv2.polarToCart(r, theta) : 극좌표 -> 직교좌표 변환
+* x,y : x,y 좌표 배열
+* r : 원점과의 거리
+* theta : 각도 값
+
+
+```python
+import cv2
+import numpy as np
+
+img = cv2.imread('./img/taekwonv1.jpg')
+rows, cols = img.shape[:2]
+
+exp = 0.5
+#exp = 1.5     # 볼록, 오목 지수(오목:0.1~1, 볼록: 1.1~)
+scale = 1     # 변환 영역 크기(0~1)
+
+# 매핑 배열 생성
+mapy, mapx = np.indices((rows, cols), dtype=np.float32)
+
+# 좌상단 기준좌표에서 -1~1로 정규화된 중심점 기준 좌표로 변경
+mapx = 2*mapx/(cols - 1) - 1
+mapy = 2*mapy/(rows - 1) - 1
+
+# 직교좌표를 극좌표로 변환
+r, theta = cv2.cartToPolar(mapx, mapy)
+
+# 왜곡 영역만 중심 확대/축소 지수 적용
+r[r< scale] = r[r<scale] **exp
+
+# 극좌표를 직교좌표로 변환
+mapx, mapy = cv2.polarToCart(r, theta)
+
+# 중심점 기준에서 좌상단 기준으로 변경
+mapx = ((mapx + 1)*cols - 1)/2
+mapy = ((mapy + 1)*rows - 1)/2
+
+# 리매핑 변환
+distorted = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
+
+cv2.imshow('origin', img)
+cv2.imshow('distorted', distorted)
+cv2.waitKey()
+cv2.destroyAllWindows()
+
+```
+
+![opencv](/assets/img/opencv/day7/opencvday7_4.png)
+
+### 방사왜곡
+
+대부분의 영상은 카메라로 촬영한다. 렌즈는 동그랗고 영상은 사각형이다 보니 렌즈 가장자리에는 왜곡이 생기고,  
+이런 돼곡을 배럴 왜곡(barrel distortion)이라고 한다. 배럴 왜곡은 다음과 같은 식으로 해결한다.
+
+![opencv](/assets/img/opencv/day7/opencvday7_5.png)
+
+* rd : 왜곡 변형 후
+* ru : 왜곡 변형 전
+* k1, k2, k3 : 왜괙 계수
+
+왜곡 계수에 따라 밖으로 튀어나오는 배럴 왜곡이 나타나기도 하고, 안으로 들어가는 핀쿠션 왜곡이 일어나기도 한다. 
+
+
+```python
+import cv2
+import numpy as np
+
+k1, k2, k3 = 0.5, 0.2, 0.0 # 배럴 왜곡
+#k1, k2, k3 = -0.3, 0, 0  # 핀큐션 왜곡
+
+img = cv2.imread('./img/girl.jpg')
+rows, cols = img.shape[:2]
+
+# 매핑 배열 생성
+mapy, mapx = np.indices((rows, cols), dtype=np.float32)
+
+# 중앙점 좌표로 -1~1 정규화 및 극좌표 변환
+mapx = 2*mapx/(cols - 1) - 1
+mapy = 2*mapy/(rows - 1) - 1
+r, theta = cv2.cartToPolar(mapx, mapy)
+
+# 방사 왜곡 변형 연산
+ru = r*(1+k1*(r**2) + k2*(r**4) + k3*(r**6))
+
+# 직교좌표 및 좌상단 기준으로 복원
+mapx, mapy = cv2.polarToCart(ru, theta)
+mapx = ((mapx + 1)*cols - 1)/2
+mapy = ((mapy + 1)*rows - 1)/2
+
+# 리매핑
+distored = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
+
+cv2.imshow('original', img)
+cv2.imshow('distored', distored)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+
+![opencv](/assets/img/opencv/day7/opencvday7_6.png)
+
+opencv에서는 배럴왜곡 연산 공식으로 cv2.undistort() 함수를 제공한다
+
+##### dst = cv2.undistort(src, cameraMtrix, distCoeffs)
+* src : 입력 원본 영상
+* cameraMatrix : 카메라 매트릭스
+![opencv](/assets/img/opencv/day7/opencvday7_7.png)
+
+* distCoeffs : 왜곡 계수, 최소 4개 또는 5, 8, 12, 14개
+    * (k1, k2, p1, p2[, k3]
+    
+다음은 방사 왜곡(radial distortion)현상을 cv2.undistort()함수로 구현한 예제이다.
+
+
+```python
+import cv2
+import numpy as np
+
+# 격자 무늬 생성
+img = np.full((300,400,3), 255, np.uint8)
+img[::10, :, :] = 0
+img[:, ::10, :] = 0
+width = img.shape[1]
+height = img.shape[0]
+
+# 왜곡 계수 설정
+#k1, k2, p1, p2 = 0.001, 0, 0, 0       # 배럴 왜곡
+k1, k2, p1, p2 = -0.0005, 0, 0, 0    # 핀쿠션 왜곡
+distCoeff = np.float64([k1, k2, p1, p2])
+
+# 임의의 값으로 카메라 매트릭스 설정
+fx, fy = 10, 10
+cx, cy = width/2, height/2
+camMtx = np.float32([[fx,0,cx],
+                   [0,fy,cy],
+                   [0,0,1]])
+
+# 왜곡 변형
+dst = cv2.undistort(img,camMtx,distCoeff)
+
+cv2.imshow('original',img)
+cv2.imshow('dst',dst)
+cv2.waitKey()
+cv2.destroyAllWindows()
+```
+
+![opencv](/assets/img/opencv/day7/opencvday7_8.png)
+
+### 모자이크 처리1
+
+
+```python
+import cv2
+
+rate = 15   # 모자이크에 사용할 축소비율(1/rate)
+win_title = 'mosaic'
+img = cv2.imread('./img/taekwonv1.jpg')
+
+while True:
+    x,y,w,h = cv2.selectROI(win_title, img, False)  # 관심영역 선택
+    if w and h:
+        roi = img[y:y+h, x:x+w]   # 관심영역 지정
+        roi = cv2.resize(roi, (w//rate, h//rate))   # 1/rate 비율로 축소
+        
+        roi = cv2.resize(roi, (w,h), interpolation=cv2.INTER_AREA)
+        img[y:y+h, x:x+w] = roi   # 원본 이미지에 적용
+        cv2.imshow(win_title, img)
+    else:
+        break
+cv2.destroyAllWindows()
+```
+
+    Select a ROI and then press SPACE or ENTER button!
+    Cancel the selection process by pressing c button!
+    Select a ROI and then press SPACE or ENTER button!
+    Cancel the selection process by pressing c button!
+
+
+![opencv](/assets/img/opencv/day7/opencvday7_9.png)
+
+### 포토샵 리퀴파이 도구
+
+
+```python
+import cv2
+import numpy as np
+
+win_title = 'Liquify'
+half = 50            # 관심영역 절판 크기
+isDragging = False   # 드래그 여부 플래그
+
+# 리퀴파이 함수
+def liquify(img, cx1, cy1, cx2,cy2):
+    # 대상 영역 좌표와 크기 설정
+    x, y, w, h = cx1-half, cy1-half, half*2, half*2
+    # 관심영역 설정
+    roi = img[y:y+h, x:x+w].copy()
+    out = roi.copy()
+    # 관심영역 기준으로 좌표 재설정
+    offset_cx1,offset_cy1 = cx1-x, cy1-y
+    offset_cx2,offset_cy2 = cx2-x, cy2-y
+    
+    # 변환 이전 4개의 삼각형 좌표
+    tri1 = [[ [0,0], [w,0], [offset_cx1, offset_cy1]],  # 상
+            [ [0,0], [0,h], [offset_cx1, offset_cy1]],  # 좌
+            [ [w,0], [offset_cx1, offset_cy1], [w,h]],  # 우
+            [ [0,h], [offset_cx1, offset_cy1], [w,h]] ] # 하
+    # 변환 이후 4개의 삼각형좌표
+    tri2 = [[ [0,0], [w,0], [offset_cx2, offset_cy2]],  # 상
+            [ [0,0], [0,h], [offset_cx2, offset_cy2]],  # 좌
+            [ [w,0], [offset_cx2, offset_cy1], [w,h]],  # 우
+            [ [0,h], [offset_cx2, offset_cy1], [w,h]] ] # 하
+    
+    for i in range(4):
+        # 각각의 삼각형 좌표에 대해 어핀 변환 적용
+        matrix = cv2.getAffineTransform( np.float32(tri1[i]), np.float32(tri2[i]))
+        warped = cv2.warpAffine( roi.copy(), matrix, (w,h),
+                                None, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT_101)
+        # 삼각형 모양의 마스크 생성
+        mask = np.zeros((h, w), dtype = np.uint8)
+        cv2.fillConvexPoly(mask, np.int32(tri2[i]), (255,255,255))
+        # 마스킹 후 합성
+        warped = cv2.bitwise_and(warped, warped, mask=mask)
+        out = cv2.bitwise_and(out, out, mask=cv2.bitwise_not(mask))
+        out = out + warped
+    # 관심영역을 원본에 합성    
+    img[y:y+h, x:x+w] = out
+    return img
+
+# 마우스 이벤트 함수
+def onMouse(event,x,y,flags,param):
+    global cx1, cy1, isDragging, img   # 전역변수참조
+    # 마우스 중심점을 기준으로 따라다니기
+    if event == cv2.EVENT_MOUSEMOVE:
+        if not isDragging:
+            img_draw = img.copy()
+            # 드래그 영역 표시
+            cv2.rectangle(img_draw, (x-half, y-half), (x+half, y+half), (0,255,0))
+            cv2.imshow(win_title, img_draw)  # 사각형으로 표시된 그림화면 출력 
+    
+    elif event == cv2.EVENT_LBUTTONDOWN:
+        isDragging = True   # 드래그를 하면
+        cx1, cy1 = x, y     # 드래그가 시작된 원래의 위치 좌표 저장
+    elif event == cv2.EVENT_LBUTTONUP:
+        if isDragging:
+            isDragging = False  # 드래그 끝나면
+            liquify(img, cx1, cy1, x, y) # 드래그 시작점과 끝점으로 리퀴파이 적용함수 호출
+            cv2.imshow(win_title, img)
+            
+if __name__ == '__main__':
+    img = cv2.imread('./img/man_face.jpg')
+    h, w = img.shape[:2]
+    
+    cv2.namedWindow(win_title)
+    cv2.setMouseCallback(win_title, onMouse)
+    cv2.imshow(win_title, img)
+    while True:
+        key = cv2.waitKey(1)
+        if key & 0xFF == 27:
+            break
+    cv2.destroyAllWindows
+```
+
+![opencv](/assets/img/opencv/day7/opencvday7_10.png)
+
+### 왜곡 거울 카메라
+
+
+```python
+import cv2
+import numpy as np
+
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+
+rows, cols = 240, 320
+
+map_y, map_x = np.indices((rows, cols), dtype=np.float32)
+
+map_mirrorh_x,map_mirrorh_y = map_x.copy(), map_y.copy()
+map_mirrorv_x,map_mirrorv_y = map_x.copy(), map_y.copy()
+
+map_mirrorh_x[: , cols//2:] = cols - map_mirrorh_x[:, cols//2:]-1
+map_mirrorv_y[rows//2:, :] = rows - map_mirrorv_x[rows//2:, :]-1
+
+
+map_wave_x, map_wave_y = map_x.copy(), map_y.copy()
+map_wave_x = map_wave_x + 15*np.sin(map_y/20)
+map_wave_y = map_wave_y + 15*np.sin(map_x/20)
+
+map_lenz_x = 2*map_x/(cols-1)-1
+map_lenz_y = 2*map_y/(rows-1)-1
+
+r, theta = cv2.cartToPolar(map_lenz_x, map_lenz_y)
+r_convex = r.copy()
+
+r_concave = r
+
+r_convex[r<1] = r_convex[r<1]**2
+
+print(r.shape, r_convex[r<1].shape)
+
+r_concave[r<1] = r_concave[r<1] **0.5
+
+map_convex_x, map_convex_y = cv2.polarToCart(r_convex, theta)
+
+map_concave_x, map_concave_y = cv2.polarToCart(r_concave, theta)
+
+map_convex_x = ((map_convex_x + 1)*cols-1)/2
+map_convex_y = ((map_convex_y + 1)*rows-1)/2
+
+map_concave_x = ((map_concave_x + 1)*cols-1)/2
+
+
+map_concave_y = ((map_concave_y + 1)*rows-1)/2
+
+
+
+while True:
+    ret, frame = cap.read()
+    mirrorh=cv2.remap(frame,map_mirrorh_x,map_mirrorh_y,cv2.INTER_LINEAR)
+    mirrorv=cv2.remap(frame,map_mirrorv_x,map_mirrorv_y,cv2.INTER_LINEAR)
+    wave = cv2.remap(frame, map_wave_x,map_wave_y,cv2.INTER_LINEAR,
+                    None, cv2.BORDER_REPLICATE)
+    
+    convex = cv2.remap(frame,map_convex_x,map_convex_y,cv2.INTER_LINEAR)    
+    concave = cv2.remap(frame,map_concave_x,map_concave_y,cv2.INTER_LINEAR)
+    
+    r1 = np.hstack((frame,mirrorh,mirrorv))
+    r2 = np.hstack((wave,convex,concave))
+
+    merged = np.vstack((r1, r2))
+    
+    cv2.imshow('distorted', merged)
+    if cv2.waitKey(1) & 0xFF==27:
+        break
+
+cap.release
+cv2.desroyAllWindows()
+
+```
+
+    (240, 320) (59868,)
+
+
+
+    ---------------------------------------------------------------------------
+
+    ValueError                                Traceback (most recent call last)
+
+    /var/folders/75/tfhdgb7j3bb3bq77xtk68rj00000gn/T/ipykernel_51619/1559556497.py in <module>
+         59     concave = cv2.remap(frame,map_concave_x,map_concave_y,cv2.INTER_LINEAR)
+         60 
+    ---> 61     r1 = np.hstack((frame,mirrorh,mirrorv))
+         62     r2 = np.hstack((wave,convex,concave))
+         63 
+
+
+    <__array_function__ internals> in hstack(*args, **kwargs)
+
+
+    ~/opt/anaconda3/lib/python3.8/site-packages/numpy/core/shape_base.py in hstack(tup)
+        344         return _nx.concatenate(arrs, 0)
+        345     else:
+    --> 346         return _nx.concatenate(arrs, 1)
+        347 
+        348 
+
+
+    <__array_function__ internals> in concatenate(*args, **kwargs)
+
+
+    ValueError: all the input array dimensions for the concatenation axis must match exactly, but along dimension 0, the array at index 0 has size 720 and the array at index 1 has size 240
+
+
+
+```python
+
+```
