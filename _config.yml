@@ -49,21 +49,21 @@ round-avatar: true
 # Uncomment the links you want to show and add your information to each one.
 social-network-links:
   email: "wlsghrla94@google.com"
-  #facebook: deanattali
+  #facebook: 
   github: jinokiim
-  #twitter: daattali
-  #patreon: DeanAttali
-  #youtube: c/daattali
-#  medium: yourname
-#  reddit: yourname
-#  linkedin: daattali
-#  xing: yourname
-#  stackoverflow: "3943160/daattali"
-#  snapchat: deanat78
+  #twitter: 
+  #patreon: 
+  #youtube: 
+#  medium: 
+#  reddit: 
+#  linkedin: 
+#  xing: 
+#  stackoverflow: " "
+#  snapchat: 
   instagram: jinokiim
-#  spotify: yourname
-#  telephone: +14159998888
-#  steam: deanat78
+#  spotify: 
+#  telephone: 
+#  steam: 
 #  twitch: yourname
 #  yelp: yourname
 #  telegram: yourname
@@ -84,7 +84,7 @@ share-links-active:
   twitter: true
   facebook: true
   linkedin: true
-  vk: true
+#  vk: true
 
 # How to display the link to your website in the footer
 # Remove this if you don't want a link in the footer
