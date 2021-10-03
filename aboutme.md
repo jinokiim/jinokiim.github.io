@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About me
-subtitle: let me introduce you to my geek side
+subtitle: 아직 작성중
 ---
 
 Hi again,
