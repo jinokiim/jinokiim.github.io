@@ -1,7 +1,12 @@
 ---
 layout: page
 ---
-
+<!-- particles.js exclusion -->
+<style>
+  #particles-js{
+      display: none;
+  }
+</style>
 {{ content }}
 
 {% assign posts = paginator.posts | default: site.posts %}
