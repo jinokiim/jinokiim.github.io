@@ -6,9 +6,8 @@ subtitle: algorithmstudy log
 
 <meta property="og:image" content="{{ post.thumbnail }}">
 
-<div class="posts-list">
+<div class="post_algorithmstudy-list">
   {% for post in paginator.posts %}
-  {% if post.categories contains 'post_algorithmstudy' %}
   <article class="post-preview">
     <a href="{{ post.url | prepend: site.baseurl }}">
 	  <h2 class="post-title">{{ post.title }}</h2>
