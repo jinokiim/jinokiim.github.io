@@ -8,7 +8,7 @@ layout: page
 
 <div class="posts-list">
   {% for post in posts %}
-  {% if post.categories contains 'post_cs' %}
+  {% if post.categories contains 'post_basic' %}
   <article class="post-preview">
     <a href="{{ post.url | relative_url }}">
       <h2 class="post-title">{{ post.title }}</h2>
