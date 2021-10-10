@@ -21,6 +21,9 @@ navbar-links:
     - OpenCV: "post_opencv"
     - Algorithmstudy: "post_algorithmstudy"
     - Practice: "post_practice"
+  computer science:
+    - Basic: "post_Basic"
+    - ADsP: "post_adsp"
   projects:
     - Mini projects: "miniporjects"
     - Blank: ""
