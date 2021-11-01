@@ -1,1 +1,12 @@
+---
+layout: post
+title: about Docker
+subtitle: docker의 개념 및 핵심설명
+gh-repo: jinokiim/jinokiim.github.io
+gh-badge: [star, fork, follow]
+thumbnail-img: /assets/img/docker/dockerthumb.png
+cover-img: /assets/img/docker/dockerbg.png
+tags: [Docker]
+comments: true
+---
 
