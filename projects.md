@@ -5,7 +5,7 @@ title: Projects
 
 You can see part of my portfolio below. Clicking the logos will bring you to their github page.
 
-Visit [my GitHub](https://github.com/kootenpv/) for more source code.
+Visit [my GitHub](https://github.com/jinokiim) for more source code.
 
 <table id="repo-table">
 <tbody>
