@@ -25,10 +25,8 @@ navbar-links:
   computer science:
     - Basic: "post_basic"
     - ADsP: "post_adsp"
-  projects:
-    - Mini projects: "miniporjects"
-    - Blank: ""
-  blank 1:
+  projects: "projects"
+  blank:
     - Blog source: "https://beautifuljekyll.com"
     - Learn markdown: "https://www.markdowntutorial.com/"
   about me: "aboutme"
