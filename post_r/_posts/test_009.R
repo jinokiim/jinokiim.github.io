@@ -1,0 +1,15 @@
+rm(list=ls())
+r1 <- as.integer(3.74)
+r2 <- as.numeric('abc')
+r3 <- as.numeric(TRUE)
+r4 <- as.logical(0.1)
+
+r5 <- as.Date('2021-10-24')
+r6 <- as.Date('03/14/2021')  # 문자열이 표준서식을 따르지 않음
+r7 <- as.Date('03/14/2021', format='%m/%d/%Y')
+r8 <- format(Sys.Date())
+r9 <- format(Sys.Date(), format='%m/%d/%Y')
+r10 <- format(Sys.Date(), '%a')
+r11 <- format(Sys.Date(), '%b')
+r12 <- format(Sys.Date(), '%y')
+r13 <- format(Sys.Date(), '%Y')
