@@ -14,7 +14,7 @@ author: Jinho KIM
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  posts: "/"
+  about me: "aboutme"
   skills:
     - Python: "post_python"
     - MySQL: "post_mysql"
@@ -25,11 +25,7 @@ navbar-links:
     - Basic: "post_cs"
     - ADsP: "post_adsp"
   projects: "projects"
-  blank:
-    - Blog source: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
-  about me: "aboutme"
-
+  posts: "/"
 # --- Logo --- #
 
 # Image to show in the navigation bar - works best with a square image
