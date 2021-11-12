@@ -14,16 +14,15 @@ author: Jinho KIM
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  home: "/"
-  learning:
+  posts: "/"
+  skills:
     - Python: "post_python"
     - MySQL: "post_mysql"
     - OpenCV: "post_opencv"
     - Algorithmstudy: "post_algorithmstudy"
     - Docker : "post_docker"
     - Practice: "post_practice"
-  computer science:
-    - Basic: "post_basic"
+    - Basic: "post_cs"
     - ADsP: "post_adsp"
   projects: "projects"
   blank:
