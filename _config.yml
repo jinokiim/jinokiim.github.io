@@ -19,6 +19,7 @@ navbar-links:
     - Python: "post_python"
     - MySQL: "post_mysql"
     - OpenCV: "post_opencv"
+    - R: "post_r"
     - Algorithmstudy: "post_algorithmstudy"
     - Docker : "post_docker"
     - Practice: "post_practice"
