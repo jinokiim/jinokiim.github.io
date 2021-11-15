@@ -25,7 +25,7 @@ TOEIC Speaking Test LV7
 ##### Email
 wlsghrla94@gmail.com  
 ##### GitHub
-https://github.com/jinokiim
+[https://github.com/jinokiim](https://github.com/jinokiim)
 
 ### Skills
 ---
