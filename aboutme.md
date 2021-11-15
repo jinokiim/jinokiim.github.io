@@ -30,4 +30,5 @@ https://github.com/jinokiim
 ---
 * Python
 * OpenCV
+* MySQL
 * GitHub
