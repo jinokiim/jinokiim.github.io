@@ -14,7 +14,7 @@ author: Jinho KIM
 # --- List of links in the navigation bar --- #
 
 navbar-links:
-  about me: "aboutme"
+  #about me: "aboutme"
   ..skills..:
     - Python: "post_python"
     - MySQL: "post_mysql"
@@ -26,7 +26,7 @@ navbar-links:
     - Basic: "post_cs"
     - ADsP: "post_adsp"
   projects: "projects"
-  posts: "/"
+  HOME: "/"
 # --- Logo --- #
 
 # Image to show in the navigation bar - works best with a square image
