@@ -1,3 +1,14 @@
+---
+layout: post
+title: javascript
+subtitle: javascript 문법 간단요약
+gh-repo: jinokiim/jinokiim.github.io
+gh-badge: [star, fork, follow]
+thumbnail-img: /assets/img/javascript/javascriptthumbnail.png
+cover-img: /assets/img/javascript/javascriptcover.png
+tags: [javascript]
+comments: true
+---
 
 ## this
 
