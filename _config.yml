@@ -16,6 +16,7 @@ author: Jinho KIM
 navbar-links:
   #about me: "aboutme"
   ..skills..:
+    - Javascript: "post_javascript"
     - Python: "post_python"
     - MySQL: "post_mysql"
     - OpenCV: "post_opencv"
