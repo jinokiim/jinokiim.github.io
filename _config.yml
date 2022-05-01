@@ -15,7 +15,7 @@ author: Jinho KIM
 
 navbar-links:
   #about me: "aboutme"
-  ..skills..:
+  Skills:
     - React: "post_react"
     - Javascript: "post_javascript"
     - Python: "post_python"
@@ -27,7 +27,7 @@ navbar-links:
     - Practice: "post_practice"
     - Basic: "post_cs"
     - ADsP: "post_adsp"
-  projects: "projects"
+#   projects: "projects"
   HOME: "/"
 # --- Logo --- #
 
